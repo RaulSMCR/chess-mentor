@@ -1,0 +1,52 @@
+# Dependencies and framework output
+node_modules/
+.next/
+/next-env.d.ts
+out/
+dist/
+build/
+coverage/
+*.tsbuildinfo
+.corepack/
+.npm-cache/
+.pnpm-cache/
+.pnpm-store/
+
+# Test output
+playwright-report/
+test-results/
+blob-report/
+
+# Local environment and secrets
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Local data, originals, caches and models
+data/
+cache/
+models/
+uploads/
+exports/
+*.sqlite
+*.sqlite3
+
+# Python helpers (future voice/OCR phases)
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# Editors and operating systems
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*

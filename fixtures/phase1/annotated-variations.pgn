@@ -1,0 +1,11 @@
+[Event "Chess Mentor Phase 1 Fixture"]
+[Site "Local"]
+[Date "2026.08.12"]
+[Round "1"]
+[White "Main Line"]
+[Black "Variations"]
+[Result "*"]
+[ChessMentorFixture "nested-rav"]
+
+1. e4 {King pawn opening} e5 (1... c5 $1 {Sicilian Defence} 2. Nf3 d6
+(2... Nc6 {Nested alternative})) 2. Nf3 $5 Nc6 3. Bb5 a6 *

@@ -1,0 +1,11 @@
+[Event "Chess Mentor Black To Move Fixture"]
+[Site "Local"]
+[Date "2026.08.12"]
+[Round "1"]
+[White "Fixture"]
+[Black "To move"]
+[Result "*"]
+[SetUp "1"]
+[FEN "8/8/8/8/8/8/4k3/7K b - - 0 2"]
+
+2... Kf2 3. Kh2 Kf1 *

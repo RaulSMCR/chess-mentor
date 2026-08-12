@@ -1,0 +1,9 @@
+[Event "Chess Mentor Unsupported Directive Fixture"]
+[Site "Local"]
+[Date "2026.08.12"]
+[Round "1"]
+[White "Fixture"]
+[Black "Directive"]
+[Result "*"]
+
+1. e4 {[%cal Ge2e4] [%clk 0:05:00]} e5 *
