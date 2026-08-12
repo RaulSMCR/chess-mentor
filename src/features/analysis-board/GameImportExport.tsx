@@ -133,6 +133,9 @@ export function GameImportExport({ controller }: GameImportExportProps) {
       <p className="input-limit">
         Límite de importación: {MAX_PGN_INPUT_BYTES} bytes UTF-8.
       </p>
+      <p className="lan-warning">
+        Modo LAN sin autenticación: usa solo datos ficticios.
+      </p>
       {message === null ? null : <p role="status">{message}</p>}
       {warnings.length === 0 ? null : (
         <div className="warning-box" role="alert">

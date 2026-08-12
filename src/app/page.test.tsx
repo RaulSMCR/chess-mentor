@@ -19,5 +19,8 @@ describe("Chess Mentor analysis shell", () => {
     expect(
       screen.getByRole("button", { name: /guardar/i }),
     ).toBeInTheDocument();
+    expect(
+      screen.getByText("Modo LAN sin autenticación: usa solo datos ficticios."),
+    ).toBeInTheDocument();
   });
 });

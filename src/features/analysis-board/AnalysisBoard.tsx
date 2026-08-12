@@ -38,16 +38,6 @@ export function AnalysisBoard({ repository }: AnalysisBoardProps) {
           {document?.title ?? "Cargando partida…"}
         </p>
       </header>
-      <GameToolbar
-        busy={controller.state.busy || controller.state.status === "loading"}
-        dirty={controller.dirty}
-        canUndo={controller.session?.past.length !== 0}
-        canRedo={controller.session?.future.length !== 0}
-        onNew={() => controller.newGame()}
-        onSave={() => void controller.save()}
-        onUndo={controller.undo}
-        onRedo={controller.redo}
-      />
       <GameImportExport controller={controller} />
       <SavedGames controller={controller} />
       <ChessBoardPanel
@@ -59,6 +49,16 @@ export function AnalysisBoard({ repository }: AnalysisBoardProps) {
         onPlay={controller.play}
         getPromotionOptions={controller.promotionOptions}
         onError={controller.reportError}
+      />
+      <GameToolbar
+        busy={controller.state.busy || controller.state.status === "loading"}
+        dirty={controller.dirty}
+        canUndo={controller.session?.past.length !== 0}
+        canRedo={controller.session?.future.length !== 0}
+        onNew={() => controller.newGame()}
+        onSave={() => void controller.save()}
+        onUndo={controller.undo}
+        onRedo={controller.redo}
       />
       <section className="position-card" aria-label="Posición actual">
         <h2>Posición actual</h2>
