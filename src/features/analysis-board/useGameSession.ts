@@ -157,6 +157,12 @@ export function useGameSession(
         ),
       );
       setState({ status: "ready", session, busy: false, error: null });
+      void repositoryRef.current
+        ?.list()
+        .then(setSavedGames)
+        .catch((error: unknown) => {
+          setState((current) => ({ ...current, error: errorMessage(error) }));
+        });
     } catch (error) {
       setState({
         status: "ready",
