@@ -12,7 +12,7 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-003 | complete | CM-002     | Playwright/Edge y E2E smoke                   |
 | CM-004 | complete | CM-003     | Gate baseline reproducible                    |
 | CM-101 | complete | CM-004     | Modelo e invariantes del árbol                |
-| CM-102 | pending  | CM-101     | Replay y reglas con chess.js                  |
+| CM-102 | complete | CM-101     | Replay y reglas con chess.js                  |
 | CM-103 | pending  | CM-102     | Comandos y navegación no destructiva          |
 | CM-104 | pending  | CM-103     | Undo/redo de ediciones                        |
 | CM-105 | pending  | CM-104     | Import/export PGN semántico                   |
@@ -27,7 +27,7 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 
 ## Próxima tarjeta
 
-`CM-101` en `tasks/PHASE-1.md`.
+`CM-103` en `tasks/PHASE-1.md`.
 
 ## Regla de avance
 

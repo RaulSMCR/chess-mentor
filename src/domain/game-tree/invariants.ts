@@ -1,4 +1,12 @@
-import type { DomainError, ErrorContext, GameNode } from "./model";
+import { Chess, validateFen } from "chess.js";
+
+import type {
+  DomainError,
+  ErrorContext,
+  GameDocumentV1,
+  GameNode,
+  MoveInput,
+} from "./model";
 import { isGameResult, isPromotion } from "./model";
 
 const SQUARE_PATTERN = /^[a-h][1-8]$/;
@@ -623,4 +631,213 @@ export function validateGameStructure(document: unknown): DomainError[] {
   }
 
   return errors;
+}
+
+function replayError(
+  code: DomainError["code"],
+  message: string,
+  path: string,
+  extra?: ErrorContext,
+): DomainError {
+  return { code, message, context: context(path, extra) };
+}
+
+function chessMoveInput(move: MoveInput): {
+  from: string;
+  to: string;
+  promotion?: string;
+} {
+  return move.promotion === undefined
+    ? { from: move.from, to: move.to }
+    : { from: move.from, to: move.to, promotion: move.promotion };
+}
+
+function validateReplayFields(
+  errors: DomainError[],
+  document: GameDocumentV1,
+): void {
+  const root = document.nodesById[document.rootNodeId];
+  if (root === undefined || root.kind !== "root") return;
+
+  const fenResult = validateFen(root.fen);
+  if (!fenResult.ok) {
+    errors.push(
+      replayError("INVALID_FEN", "El FEN del root no es válido.", "root.fen", {
+        reason: fenResult.error ?? "unknown",
+      }),
+    );
+    return;
+  }
+
+  let chessRoot: Chess;
+  try {
+    chessRoot = new Chess(root.fen);
+  } catch (cause) {
+    errors.push(
+      replayError(
+        "INVALID_FEN",
+        "El FEN del root no pudo cargarse.",
+        "root.fen",
+        {
+          reason: cause instanceof Error ? cause.message : String(cause),
+        },
+      ),
+    );
+    return;
+  }
+
+  if (chessRoot.fen() !== root.fen) {
+    errors.push(
+      replayError(
+        "CORRUPT_TREE",
+        "El FEN del root no está normalizado.",
+        "root.fen",
+        {
+          expected: chessRoot.fen(),
+          actual: root.fen,
+        },
+      ),
+    );
+  }
+
+  const walk = (
+    parentId: string,
+    history: readonly MoveInput[],
+    pathIds: readonly string[],
+  ): void => {
+    const parent = document.nodesById[parentId];
+    if (parent === undefined) return;
+
+    for (const childId of parent.childIds) {
+      const child = document.nodesById[childId];
+      if (child === undefined || child.kind !== "move") continue;
+      const path = [...pathIds, child.id].join("->");
+      const chess = new Chess(root.fen);
+      let replayFailed = false;
+
+      for (const previousMove of history) {
+        try {
+          chess.move(chessMoveInput(previousMove));
+        } catch (cause) {
+          errors.push(
+            replayError(
+              "ILLEGAL_MOVE",
+              "La ruta contiene una jugada ilegal antes del nodo.",
+              path,
+              {
+                reason: cause instanceof Error ? cause.message : String(cause),
+              },
+            ),
+          );
+          replayFailed = true;
+          break;
+        }
+      }
+      if (replayFailed) continue;
+
+      let applied: ReturnType<Chess["move"]>;
+      try {
+        applied = chess.move(chessMoveInput(child.move));
+      } catch (cause) {
+        errors.push(
+          replayError(
+            "ILLEGAL_MOVE",
+            "El movimiento del nodo es ilegal en su posición padre.",
+            path,
+            {
+              nodeId: child.id,
+              reason: cause instanceof Error ? cause.message : String(cause),
+            },
+          ),
+        );
+        continue;
+      }
+
+      const expectedUci = `${applied.from}${applied.to}${applied.promotion ?? ""}`;
+      if (
+        child.move.from !== applied.from ||
+        child.move.to !== applied.to ||
+        child.move.promotion !== applied.promotion
+      ) {
+        errors.push(
+          replayError(
+            "CORRUPT_TREE",
+            "El movimiento cacheado no coincide con chess.js.",
+            `nodesById.${child.id}.move`,
+            {
+              expected: `${applied.from}${applied.to}${applied.promotion ?? ""}`,
+              actual: `${child.move.from}${child.move.to}${child.move.promotion ?? ""}`,
+            },
+          ),
+        );
+      }
+      if (child.uci !== expectedUci) {
+        errors.push(
+          replayError(
+            "CORRUPT_TREE",
+            "El UCI cacheado no coincide.",
+            `nodesById.${child.id}.uci`,
+            {
+              expected: expectedUci,
+              actual: child.uci,
+            },
+          ),
+        );
+      }
+      if (child.san !== applied.san) {
+        errors.push(
+          replayError(
+            "CORRUPT_TREE",
+            "El SAN cacheado no coincide.",
+            `nodesById.${child.id}.san`,
+            {
+              expected: applied.san,
+              actual: child.san,
+            },
+          ),
+        );
+      }
+      const expectedFen = chess.fen();
+      if (child.fen !== expectedFen) {
+        errors.push(
+          replayError(
+            "CORRUPT_TREE",
+            "El FEN cacheado no coincide.",
+            `nodesById.${child.id}.fen`,
+            {
+              expected: expectedFen,
+              actual: child.fen,
+            },
+          ),
+        );
+      }
+
+      walk(child.id, [...history, child.move], [...pathIds, child.id]);
+    }
+  };
+
+  walk(document.rootNodeId, [], [document.rootNodeId]);
+}
+
+export function validateGameDocument(document: unknown): DomainError[] {
+  const structureErrors = validateGameStructure(document);
+  if (structureErrors.length > 0) return structureErrors;
+  const errors: DomainError[] = [];
+  validateReplayFields(errors, document as GameDocumentV1);
+  return errors;
+}
+
+export class GameDocumentValidationError extends Error {
+  readonly name = "GameDocumentValidationError";
+
+  constructor(readonly errors: readonly DomainError[]) {
+    super(errors.map((item) => `${item.code}: ${item.message}`).join("; "));
+  }
+}
+
+export function assertGameDocument(
+  document: unknown,
+): asserts document is GameDocumentV1 {
+  const errors = validateGameDocument(document);
+  if (errors.length > 0) throw new GameDocumentValidationError(errors);
 }
