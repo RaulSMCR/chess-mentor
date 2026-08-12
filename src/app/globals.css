@@ -86,6 +86,44 @@ button:disabled {
   gap: 0.75rem;
 }
 
+.board-panel {
+  display: grid;
+  gap: 0.75rem;
+  justify-items: start;
+}
+
+.board-frame {
+  width: min(100%, 32rem);
+}
+
+.promotion-backdrop {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgb(31 41 51 / 45%);
+  padding: 1rem;
+}
+
+.promotion-dialog {
+  display: grid;
+  gap: 1rem;
+  min-width: min(100%, 22rem);
+  border-radius: 0.75rem;
+  background: #fff;
+  padding: 1.25rem;
+}
+
+.promotion-dialog h2 {
+  margin: 0;
+}
+
+.promotion-options {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+
 .position-card p {
   overflow-wrap: anywhere;
   font-family: ui-monospace, SFMono-Regular, Consolas, monospace;

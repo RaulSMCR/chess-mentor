@@ -8,7 +8,9 @@ import {
 import type { GameRepository } from "@/infrastructure/games/GameRepository";
 
 import { GameToolbar } from "./GameToolbar";
+import { ChessBoardPanel } from "./ChessBoardPanel";
 import { useGameSession } from "./useGameSession";
+import { useState } from "react";
 
 type AnalysisBoardProps = Readonly<{
   repository?: GameRepository;
@@ -16,6 +18,7 @@ type AnalysisBoardProps = Readonly<{
 
 export function AnalysisBoard({ repository }: AnalysisBoardProps) {
   const controller = useGameSession({ repository });
+  const [orientation, setOrientation] = useState<"white" | "black">("white");
   const document = controller.document;
   const current = document === null ? null : selectCurrentNode(document);
   const node = current?.ok === true ? current.value : null;
@@ -40,6 +43,16 @@ export function AnalysisBoard({ repository }: AnalysisBoardProps) {
         onSave={() => void controller.save()}
         onUndo={controller.undo}
         onRedo={controller.redo}
+      />
+      <ChessBoardPanel
+        document={document}
+        orientation={orientation}
+        onFlip={() =>
+          setOrientation((current) => (current === "white" ? "black" : "white"))
+        }
+        onPlay={controller.play}
+        getPromotionOptions={controller.promotionOptions}
+        onError={controller.reportError}
       />
       <section className="position-card" aria-label="Posición actual">
         <h2>Posición actual</h2>

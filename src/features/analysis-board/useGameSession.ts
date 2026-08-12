@@ -18,7 +18,10 @@ import {
   navigateTo,
   playMove,
 } from "@/domain/game-tree/commands";
-import { createGameDocument } from "@/domain/game-tree/replay";
+import {
+  createGameDocument,
+  getPromotionOptions,
+} from "@/domain/game-tree/replay";
 import type {
   Clock,
   DomainError,
@@ -59,7 +62,9 @@ export type GameSessionController = Readonly<{
   error: string | null;
   newGame: (rootFen?: string) => void;
   save: () => Promise<void>;
-  play: (move: MoveInput) => void;
+  play: (move: MoveInput) => boolean;
+  promotionOptions: (from: string, to: string) => Result<readonly string[]>;
+  reportError: (message: string) => void;
   navigate: (nodeId: string) => void;
   back: () => void;
   forward: (childId?: string) => void;
@@ -115,6 +120,8 @@ export function useGameSession(
     busy: false,
     error: null,
   });
+  const sessionRef = useRef<GameSession | null>(null);
+  sessionRef.current = state.session;
 
   useEffect(() => {
     if (initializedRef.current) return;
@@ -144,23 +151,56 @@ export function useGameSession(
     }
   }, [options.rootFen]);
 
-  const play = useCallback((move: MoveInput) => {
-    setState((current) => {
-      if (current.session === null) return current;
-      const result = playMove(current.session.present, move, {
-        idFactory: idFactoryRef.current,
-        clock: clockRef.current,
-      });
-      if (!result.ok)
-        return {
-          ...current,
-          error: `${result.error.code}: ${result.error.message}`,
-        };
-      const next = applyMutation(current.session, () => result.value);
-      return next.ok
-        ? { ...current, session: next.value, error: null }
-        : { ...current, error: `${next.error.code}: ${next.error.message}` };
+  const play = useCallback((move: MoveInput): boolean => {
+    const currentSession = sessionRef.current;
+    if (currentSession === null) return false;
+    const result = playMove(currentSession.present, move, {
+      idFactory: idFactoryRef.current,
+      clock: clockRef.current,
     });
+    if (!result.ok) {
+      setState((current) => ({
+        ...current,
+        error: `${result.error.code}: ${result.error.message}`,
+      }));
+      return false;
+    }
+    const next = applyMutation(currentSession, () => result.value);
+    if (!next.ok) {
+      setState((current) => ({
+        ...current,
+        error: `${next.error.code}: ${next.error.message}`,
+      }));
+      return false;
+    }
+    setState((current) => ({ ...current, session: next.value, error: null }));
+    return true;
+  }, []);
+
+  const promotionOptions = useCallback(
+    (from: string, to: string): Result<readonly string[]> => {
+      const currentSession = sessionRef.current;
+      if (currentSession === null) {
+        return {
+          ok: false,
+          error: {
+            code: "NODE_NOT_FOUND",
+            message: "La sesión aún no está lista.",
+          },
+        };
+      }
+      return getPromotionOptions(
+        currentSession.present,
+        currentSession.present.cursorNodeId,
+        from,
+        to,
+      );
+    },
+    [],
+  );
+
+  const reportError = useCallback((message: string) => {
+    setState((current) => ({ ...current, error: message }));
   }, []);
 
   const navigate = useCallback((nodeId: string) => {
@@ -278,6 +318,8 @@ export function useGameSession(
     newGame,
     save,
     play,
+    promotionOptions,
+    reportError,
     navigate,
     back,
     forward,

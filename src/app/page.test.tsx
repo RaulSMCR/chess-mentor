@@ -1,7 +1,11 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import Home from "./page";
+
+vi.mock("react-chessboard", () => ({
+  Chessboard: () => <div data-testid="mock-board">tablero</div>,
+}));
 
 describe("Chess Mentor analysis shell", () => {
   it("renders the stable heading and session actions", async () => {
