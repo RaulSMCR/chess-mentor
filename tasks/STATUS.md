@@ -15,8 +15,8 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-102 | complete | CM-101     | Replay y reglas con chess.js                  |
 | CM-103 | complete | CM-102     | Comandos y navegación no destructiva          |
 | CM-104 | complete | CM-103     | Undo/redo de ediciones                        |
-| CM-105 | pending  | CM-104     | Import/export PGN semántico                   |
-| CM-106 | pending  | CM-105     | Repositorios memoria/localStorage             |
+| CM-105 | complete | CM-104     | Import/export PGN semántico                   |
+| CM-106 | in_progress | CM-105     | Repositorios memoria/localStorage             |
 | CM-107 | pending  | CM-106     | Sesión React y shell de UI                    |
 | CM-108 | pending  | CM-107     | Tablero, drop, promoción y flip               |
 | CM-109 | pending  | CM-108     | Árbol visible, navegación, comentarios y NAG  |
@@ -27,7 +27,7 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 
 ## Próxima tarjeta
 
-`CM-105` en `tasks/PHASE-1.md`.
+`CM-106` en `tasks/PHASE-1.md`.
 
 ## Regla de avance
 
