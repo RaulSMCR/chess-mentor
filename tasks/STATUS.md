@@ -10,7 +10,7 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-001 | complete | CM-000     | Inicializar Git, baseline Next y lockfile     |
 | CM-002 | complete | CM-001     | Lint, typecheck, format y unit harness        |
 | CM-003 | complete | CM-002     | Playwright/Edge y E2E smoke                   |
-| CM-004 | pending  | CM-003     | Gate baseline reproducible                    |
+| CM-004 | complete | CM-003     | Gate baseline reproducible                    |
 | CM-101 | pending  | CM-004     | Modelo e invariantes del árbol                |
 | CM-102 | pending  | CM-101     | Replay y reglas con chess.js                  |
 | CM-103 | pending  | CM-102     | Comandos y navegación no destructiva          |
@@ -27,7 +27,7 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 
 ## Próxima tarjeta
 
-`CM-001` en `tasks/PHASE-0.md`.
+`CM-101` en `tasks/PHASE-1.md`.
 
 ## Regla de avance
 
