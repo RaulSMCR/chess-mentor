@@ -201,8 +201,122 @@ export function navigateForward(
   return { ok: true, value: cloneWithCursor(document, nextId) };
 }
 
+function annotationTarget(
+  document: GameDocumentV1,
+  nodeId: NodeId,
+): Result<Extract<GameNode, { kind: "move" }>> {
+  const valid = validateForCommand(document);
+  if (!valid.ok) return valid;
+  const node = document.nodesById[nodeId];
+  if (node === undefined) {
+    return failure(
+      commandError(
+        "NODE_NOT_FOUND",
+        "El nodo solicitado no existe.",
+        "nodeId",
+        {
+          nodeId,
+        },
+      ),
+    );
+  }
+  if (node.kind !== "move") {
+    return failure(
+      commandError(
+        "INVALID_DOCUMENT",
+        "El root no admite comentarios ni NAG en Fase 1.",
+        "nodeId",
+        { nodeId },
+      ),
+    );
+  }
+  return { ok: true, value: node };
+}
+
+function changedAnnotation(
+  document: GameDocumentV1,
+  node: Extract<GameNode, { kind: "move" }>,
+  nextNode: Extract<GameNode, { kind: "move" }>,
+  dependencies: Pick<CommandDependencies, "clock">,
+): Result<GameDocumentV1> {
+  if (
+    node.comment === nextNode.comment &&
+    JSON.stringify(node.nags) === JSON.stringify(nextNode.nags)
+  ) {
+    return { ok: true, value: document };
+  }
+  const timestamp = dependencies.clock();
+  if (!validClock(timestamp)) {
+    return failure(
+      commandError(
+        "INVALID_DOCUMENT",
+        "clock debe devolver ISO-8601 UTC válido.",
+      ),
+    );
+  }
+  return {
+    ok: true,
+    value: {
+      ...document,
+      nodesById: { ...document.nodesById, [node.id]: nextNode },
+      revision: document.revision + 1,
+      updatedAt: timestamp,
+    },
+  };
+}
+
+export function setComment(
+  document: GameDocumentV1,
+  nodeId: NodeId,
+  comment: string,
+  dependencies: Pick<CommandDependencies, "clock">,
+): Result<GameDocumentV1> {
+  const target = annotationTarget(document, nodeId);
+  if (!target.ok) return target;
+  const normalized = comment.trim();
+  const nextNode = {
+    ...target.value,
+    comment: normalized === "" ? null : normalized,
+  };
+  return changedAnnotation(document, target.value, nextNode, dependencies);
+}
+
+export function setNags(
+  document: GameDocumentV1,
+  nodeId: NodeId,
+  nags: readonly number[],
+  dependencies: Pick<CommandDependencies, "clock">,
+): Result<GameDocumentV1> {
+  const target = annotationTarget(document, nodeId);
+  if (!target.ok) return target;
+  const normalized: number[] = [];
+  for (const nag of nags) {
+    if (!Number.isInteger(nag) || nag < 1 || nag > 255) {
+      return failure(
+        commandError(
+          "INVALID_NAG",
+          "Cada NAG debe ser un entero entre 1 y 255.",
+          "nags",
+          {
+            nag: typeof nag === "number" ? nag : null,
+          },
+        ),
+      );
+    }
+    if (!normalized.includes(nag)) normalized.push(nag);
+  }
+  return changedAnnotation(
+    document,
+    target.value,
+    { ...target.value, nags: normalized },
+    dependencies,
+  );
+}
+
 export const play = playMove;
 
 export const back = navigateBack;
 
 export const forward = navigateForward;
+export const comment = setComment;
+export const nags = setNags;

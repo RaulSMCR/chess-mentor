@@ -17,6 +17,8 @@ import {
   navigateForward,
   navigateTo,
   playMove,
+  setComment,
+  setNags,
 } from "@/domain/game-tree/commands";
 import {
   createGameDocument,
@@ -65,6 +67,8 @@ export type GameSessionController = Readonly<{
   play: (move: MoveInput) => boolean;
   promotionOptions: (from: string, to: string) => Result<readonly string[]>;
   reportError: (message: string) => void;
+  setComment: (nodeId: string, comment: string) => boolean;
+  setNags: (nodeId: string, nags: readonly number[]) => boolean;
   navigate: (nodeId: string) => void;
   back: () => void;
   forward: (childId?: string) => void;
@@ -203,6 +207,50 @@ export function useGameSession(
     setState((current) => ({ ...current, error: message }));
   }, []);
 
+  const setCommentAction = useCallback(
+    (nodeId: string, comment: string): boolean => {
+      const currentSession = sessionRef.current;
+      if (currentSession === null) return false;
+      const result = setComment(currentSession.present, nodeId, comment, {
+        clock: clockRef.current,
+      });
+      if (!result.ok) {
+        reportError(`${result.error.code}: ${result.error.message}`);
+        return false;
+      }
+      const next = applyMutation(currentSession, () => result.value);
+      if (!next.ok) {
+        reportError(`${next.error.code}: ${next.error.message}`);
+        return false;
+      }
+      setState((current) => ({ ...current, session: next.value, error: null }));
+      return true;
+    },
+    [reportError],
+  );
+
+  const setNagsAction = useCallback(
+    (nodeId: string, nags: readonly number[]): boolean => {
+      const currentSession = sessionRef.current;
+      if (currentSession === null) return false;
+      const result = setNags(currentSession.present, nodeId, nags, {
+        clock: clockRef.current,
+      });
+      if (!result.ok) {
+        reportError(`${result.error.code}: ${result.error.message}`);
+        return false;
+      }
+      const next = applyMutation(currentSession, () => result.value);
+      if (!next.ok) {
+        reportError(`${next.error.code}: ${next.error.message}`);
+        return false;
+      }
+      setState((current) => ({ ...current, session: next.value, error: null }));
+      return true;
+    },
+    [reportError],
+  );
+
   const navigate = useCallback((nodeId: string) => {
     setState((current) => {
       if (current.session === null) return current;
@@ -320,6 +368,8 @@ export function useGameSession(
     play,
     promotionOptions,
     reportError,
+    setComment: setCommentAction,
+    setNags: setNagsAction,
     navigate,
     back,
     forward,

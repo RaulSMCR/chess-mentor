@@ -9,6 +9,8 @@ import type { GameRepository } from "@/infrastructure/games/GameRepository";
 
 import { GameToolbar } from "./GameToolbar";
 import { ChessBoardPanel } from "./ChessBoardPanel";
+import { AnnotationEditor } from "./AnnotationEditor";
+import { MoveTree } from "./MoveTree";
 import { useGameSession } from "./useGameSession";
 import { useState } from "react";
 
@@ -74,6 +76,17 @@ export function AnalysisBoard({ repository }: AnalysisBoardProps) {
           </button>
         </div>
       </section>
+      {document === null ? null : (
+        <>
+          <MoveTree document={document} onNavigate={controller.navigate} />
+          <AnnotationEditor
+            key={node?.id ?? document.rootNodeId}
+            node={node}
+            onComment={controller.setComment}
+            onNags={controller.setNags}
+          />
+        </>
+      )}
       {controller.error === null ? null : (
         <p role="alert" className="error-message">
           {controller.error}

@@ -9,6 +9,8 @@ import {
   navigateForward,
   navigateTo,
   playMove,
+  setComment,
+  setNags,
 } from "./commands";
 import type { GameDocumentV1, MoveInput, MoveNode, RootNode } from "./model";
 
@@ -179,6 +181,83 @@ describe("game-tree commands", () => {
     expect(navigateBack(createDocument())).toEqual({
       ok: true,
       value: createDocument(),
+    });
+  });
+
+  it("normaliza comentarios, evita no-op y cambia una sola vez", () => {
+    const document = addLine(createDocument(), [
+      { id: "e4", move: { from: "e2", to: "e4" } },
+    ]);
+    let clockCalls = 0;
+    const dependencies = {
+      clock: () => {
+        clockCalls += 1;
+        return "2026-08-12T18:05:00.000Z";
+      },
+    };
+    const changed = setComment(
+      document,
+      "e4",
+      "  Idea central  ",
+      dependencies,
+    );
+    expect(changed).toMatchObject({
+      ok: true,
+      value: {
+        revision: 1,
+        nodesById: { e4: { comment: "Idea central" } },
+      },
+    });
+    expect(clockCalls).toBe(1);
+    if (!changed.ok) return;
+    const noOp = setComment(changed.value, "e4", "Idea central", dependencies);
+    expect(noOp).toEqual({ ok: true, value: changed.value });
+    expect(clockCalls).toBe(1);
+  });
+
+  it("valida NAG, deduplica preservando orden y no toca hermanos", () => {
+    const document = addLine(createDocument(), [
+      { id: "e4", move: { from: "e2", to: "e4" } },
+      { id: "e5", move: { from: "e7", to: "e5" } },
+    ]);
+    const atE4 = navigateTo(document, "e4");
+    if (!atE4.ok) throw new Error("e4 setup failed");
+    const sibling = playMove(
+      atE4.value,
+      { from: "c7", to: "c5" },
+      { idFactory: () => "c5", clock: () => TIMESTAMP },
+    );
+    if (!sibling.ok) throw new Error("sibling setup failed");
+    let clockCalls = 0;
+    const dependencies = {
+      clock: () => {
+        clockCalls += 1;
+        return "2026-08-12T18:06:00.000Z";
+      },
+    };
+    const invalid = setNags(sibling.value, "e5", [1, 256], dependencies);
+    expect(invalid).toMatchObject({
+      ok: false,
+      error: { code: "INVALID_NAG" },
+    });
+    expect(clockCalls).toBe(0);
+    const valid = setNags(sibling.value, "e5", [1, 1, 5], dependencies);
+    expect(valid).toMatchObject({
+      ok: true,
+      value: { nodesById: { e5: { nags: [1, 5] }, c5: { nags: [] } } },
+    });
+    expect(clockCalls).toBe(1);
+  });
+
+  it("rechaza anotaciones en root", () => {
+    const document = createDocument();
+    expect(
+      setComment(document, document.rootNodeId, "root", {
+        clock: () => TIMESTAMP,
+      }),
+    ).toMatchObject({
+      ok: false,
+      error: { code: "INVALID_DOCUMENT" },
     });
   });
 });

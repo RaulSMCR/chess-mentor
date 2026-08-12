@@ -86,6 +86,71 @@ button:disabled {
   gap: 0.75rem;
 }
 
+.move-tree,
+.annotation-editor {
+  display: grid;
+  gap: 0.75rem;
+  border: 1px solid #d6d9dc;
+  border-radius: 0.75rem;
+  background: #fff;
+  padding: 1rem;
+}
+
+.move-tree h2,
+.annotation-editor h2 {
+  margin: 0;
+}
+
+.move-list {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.move-list .move-list {
+  margin-top: 0.35rem;
+}
+
+.move-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.move-button[aria-current="step"] {
+  outline: 2px solid #1976d2;
+  outline-offset: 2px;
+}
+
+.variation-item {
+  border-left: 3px solid #d6d9dc;
+  padding-left: 0.5rem;
+}
+
+.variation-label {
+  color: #52606d;
+  font-size: 0.75rem;
+}
+
+.annotation-editor label {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.annotation-editor textarea,
+.annotation-editor input {
+  width: 100%;
+  border: 1px solid #9aa5b1;
+  border-radius: 0.35rem;
+  padding: 0.5rem;
+}
+
+.annotation-editor textarea {
+  min-height: 5rem;
+  resize: vertical;
+}
+
 .board-panel {
   display: grid;
   gap: 0.75rem;
