@@ -13,16 +13,94 @@ body {
   margin: 0;
 }
 
-main {
+.analysis-shell {
   min-height: 100vh;
+  max-width: 52rem;
+  margin: 0 auto;
   display: grid;
-  place-content: center;
-  gap: 0.5rem;
+  align-content: start;
+  gap: 1rem;
   padding: 2rem;
-  text-align: center;
 }
 
-h1,
-p {
+.analysis-header,
+.position-card,
+.game-toolbar {
+  border: 1px solid #d6d9dc;
+  border-radius: 0.75rem;
+  background: #fff;
+  padding: 1rem;
+}
+
+.analysis-header h1,
+.analysis-header p,
+.position-card h2,
+.position-card p {
+  margin: 0;
+}
+
+.analysis-header h1 {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+}
+
+.eyebrow,
+.storage-note {
+  color: #52606d;
+  font-size: 0.875rem;
+}
+
+.session-title {
+  margin-top: 0.35rem !important;
+}
+
+.game-toolbar,
+.navigation-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+button {
+  border: 1px solid #52606d;
+  border-radius: 0.4rem;
+  background: #f7f7f5;
+  color: #1f2933;
+  cursor: pointer;
+  padding: 0.5rem 0.75rem;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.game-toolbar [role="status"] {
+  margin-left: auto;
+  color: #52606d;
+  font-size: 0.875rem;
+}
+
+.position-card {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.position-card p {
+  overflow-wrap: anywhere;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.875rem;
+}
+
+.error-message {
+  border: 1px solid #b42318;
+  border-radius: 0.5rem;
+  background: #fff1f0;
+  color: #8a1c13;
+  margin: 0;
+  padding: 0.75rem;
+}
+
+.storage-note {
   margin: 0;
 }
