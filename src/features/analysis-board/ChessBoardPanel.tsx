@@ -36,6 +36,7 @@ export function ChessBoardPanel({
   onError,
 }: ChessBoardPanelProps) {
   const [pending, setPending] = useState<PendingPromotion | null>(null);
+  const [selectedSquare, setSelectedSquare] = useState<string | null>(null);
   const mounted = useSyncExternalStore(
     () => () => undefined,
     () => true,
@@ -70,6 +71,18 @@ export function ChessBoardPanel({
     [getPromotionOptions, onError, onPlay],
   );
 
+  const handleSquareClick = useCallback(
+    ({ square }: { square: string }) => {
+      if (selectedSquare === null) {
+        setSelectedSquare(square);
+        return;
+      }
+      handleDrop({ sourceSquare: selectedSquare, targetSquare: square });
+      setSelectedSquare(null);
+    },
+    [handleDrop, selectedSquare],
+  );
+
   const confirmPromotion = useCallback(
     (promotion: string) => {
       if (pending === null) return;
@@ -93,6 +106,7 @@ export function ChessBoardPanel({
               boardOrientation: orientation,
               allowDragging: document !== null,
               onPieceDrop: handleDrop,
+              onSquareClick: handleSquareClick,
             }}
           />
         ) : (
