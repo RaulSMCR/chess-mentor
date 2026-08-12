@@ -15,7 +15,7 @@ describe("Chess Mentor analysis shell", () => {
       screen.getByRole("heading", { level: 1, name: "Chess Mentor" }),
     ).toBeInTheDocument();
     expect(await screen.findByText("Partida sin título")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /nueva/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Nueva" })).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: /guardar/i }),
     ).toBeInTheDocument();

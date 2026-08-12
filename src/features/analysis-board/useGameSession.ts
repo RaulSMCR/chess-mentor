@@ -38,6 +38,8 @@ import {
 } from "@/infrastructure/games/GameRepository";
 import { LocalStorageGameRepository } from "@/infrastructure/games/LocalStorageGameRepository";
 import { MemoryGameRepository } from "@/infrastructure/games/MemoryGameRepository";
+import { exportPgn, importPgn, type PgnWarning } from "@/domain/pgn/adapter";
+import type { GameSummary } from "@/infrastructure/games/GameRepository";
 
 export const STANDARD_ROOT_FEN =
   "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
@@ -62,6 +64,7 @@ export type GameSessionController = Readonly<{
   document: GameDocumentV1 | null;
   dirty: boolean;
   error: string | null;
+  savedGames: readonly GameSummary[];
   newGame: (rootFen?: string) => void;
   save: () => Promise<void>;
   play: (move: MoveInput) => boolean;
@@ -74,6 +77,14 @@ export type GameSessionController = Readonly<{
   forward: (childId?: string) => void;
   undo: () => void;
   redo: () => void;
+  importText: (
+    text: string,
+    acceptWarnings?: boolean,
+  ) => { ok: true; warnings: readonly PgnWarning[] } | { ok: false };
+  exportText: () => string | null;
+  refreshSavedGames: () => Promise<void>;
+  openSaved: (id: string) => Promise<boolean>;
+  deleteSaved: (id: string) => Promise<boolean>;
 }>;
 
 function defaultIdFactory(): IdFactory {
@@ -124,6 +135,7 @@ export function useGameSession(
     busy: false,
     error: null,
   });
+  const [savedGames, setSavedGames] = useState<readonly GameSummary[]>([]);
   const sessionRef = useRef<GameSession | null>(null);
   sessionRef.current = state.session;
 
@@ -154,6 +166,16 @@ export function useGameSession(
       });
     }
   }, [options.rootFen]);
+
+  const refreshSavedGames = useCallback(async () => {
+    const repository = repositoryRef.current;
+    if (repository === null) return;
+    try {
+      setSavedGames(await repository.list());
+    } catch (error) {
+      setState((current) => ({ ...current, error: errorMessage(error) }));
+    }
+  }, []);
 
   const play = useCallback((move: MoveInput): boolean => {
     const currentSession = sessionRef.current;
@@ -329,6 +351,7 @@ export function useGameSession(
               error: null,
             },
       );
+      void refreshSavedGames();
     } catch (error) {
       setState((current) => ({
         ...current,
@@ -336,7 +359,100 @@ export function useGameSession(
         error: errorMessage(error),
       }));
     }
-  }, [state.session]);
+  }, [refreshSavedGames, state.session]);
+
+  const importText = useCallback(
+    (
+      text: string,
+      acceptWarnings = false,
+    ): { ok: true; warnings: readonly PgnWarning[] } | { ok: false } => {
+      const result = importPgn(text, {
+        idFactory: idFactoryRef.current,
+        clock: clockRef.current,
+      });
+      if (!result.ok) {
+        setState((current) => ({
+          ...current,
+          error: `${result.error.code}: ${result.error.message}`,
+        }));
+        return { ok: false };
+      }
+      if (!acceptWarnings) {
+        return { ok: true, warnings: result.value.warnings };
+      }
+      setState((current) => ({
+        ...current,
+        session: startSession(result.value.document),
+        error: null,
+      }));
+      return { ok: true, warnings: result.value.warnings };
+    },
+    [],
+  );
+
+  const exportText = useCallback(() => {
+    const document = sessionRef.current?.present;
+    if (document === undefined) return null;
+    const result = exportPgn(document);
+    if (!result.ok) {
+      setState((current) => ({
+        ...current,
+        error: `${result.error.code}: ${result.error.message}`,
+      }));
+      return null;
+    }
+    return result.value;
+  }, []);
+
+  const openSaved = useCallback(async (id: string): Promise<boolean> => {
+    const repository = repositoryRef.current;
+    if (repository === null) return false;
+    try {
+      const document = await repository.get(id);
+      if (document === null) {
+        setState((current) => ({
+          ...current,
+          error: "La partida guardada ya no existe.",
+        }));
+        return false;
+      }
+      setState((current) => ({
+        ...current,
+        session: markSaved(startSession(document)),
+        error: null,
+      }));
+      return true;
+    } catch (error) {
+      setState((current) => ({ ...current, error: errorMessage(error) }));
+      return false;
+    }
+  }, []);
+
+  const deleteSaved = useCallback(
+    async (id: string): Promise<boolean> => {
+      const repository = repositoryRef.current;
+      if (repository === null) return false;
+      try {
+        await repository.remove(id);
+        setState((current) => {
+          if (current.session?.present.id !== id) return current;
+          return {
+            ...current,
+            session:
+              current.session === null
+                ? null
+                : { ...current.session, savedSnapshot: null },
+          };
+        });
+        await refreshSavedGames();
+        return true;
+      } catch (error) {
+        setState((current) => ({ ...current, error: errorMessage(error) }));
+        return false;
+      }
+    },
+    [refreshSavedGames],
+  );
 
   const applySession = useCallback(
     (transform: (session: GameSession) => Result<GameSession>) => {
@@ -363,6 +479,7 @@ export function useGameSession(
     document: state.session?.present ?? null,
     dirty: state.session === null ? false : isDirty(state.session),
     error: state.error,
+    savedGames,
     newGame,
     save,
     play,
@@ -375,6 +492,11 @@ export function useGameSession(
     forward,
     undo: undoAction,
     redo: redoAction,
+    importText,
+    exportText,
+    refreshSavedGames,
+    openSaved,
+    deleteSaved,
   };
 }
 

@@ -96,6 +96,74 @@ button:disabled {
   padding: 1rem;
 }
 
+.import-export,
+.saved-games {
+  display: grid;
+  gap: 0.75rem;
+  border: 1px solid #d6d9dc;
+  border-radius: 0.75rem;
+  background: #fff;
+  padding: 1rem;
+}
+
+.import-export h2,
+.saved-games h2 {
+  margin: 0;
+}
+
+.import-export-actions {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.import-export-actions label {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.import-export-actions input {
+  width: 100%;
+  border: 1px solid #9aa5b1;
+  border-radius: 0.35rem;
+  padding: 0.5rem;
+}
+
+.input-limit {
+  color: #52606d;
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+.warning-box {
+  border: 1px solid #c58b00;
+  border-radius: 0.5rem;
+  background: #fff8e1;
+  padding: 0.75rem;
+}
+
+.warning-box p {
+  margin-top: 0;
+}
+
+.saved-games ul {
+  display: grid;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.saved-games li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.saved-games li span {
+  flex: 1 1 12rem;
+}
+
 .move-tree h2,
 .annotation-editor h2 {
   margin: 0;

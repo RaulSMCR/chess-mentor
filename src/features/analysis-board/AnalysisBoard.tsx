@@ -11,6 +11,8 @@ import { GameToolbar } from "./GameToolbar";
 import { ChessBoardPanel } from "./ChessBoardPanel";
 import { AnnotationEditor } from "./AnnotationEditor";
 import { MoveTree } from "./MoveTree";
+import { GameImportExport } from "./GameImportExport";
+import { SavedGames } from "./SavedGames";
 import { useGameSession } from "./useGameSession";
 import { useState } from "react";
 
@@ -46,6 +48,8 @@ export function AnalysisBoard({ repository }: AnalysisBoardProps) {
         onUndo={controller.undo}
         onRedo={controller.redo}
       />
+      <GameImportExport controller={controller} />
+      <SavedGames controller={controller} />
       <ChessBoardPanel
         document={document}
         orientation={orientation}

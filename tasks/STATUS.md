@@ -20,14 +20,14 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-107 | complete    | CM-106     | Sesión React y shell de UI                    |
 | CM-108 | complete    | CM-107     | Tablero, drop, promoción y flip               |
 | CM-109 | complete    | CM-108     | Árbol visible, navegación, comentarios y NAG  |
-| CM-110 | in_progress | CM-109     | Nueva/FEN, import/export y partidas guardadas |
-| CM-111 | pending     | CM-110     | Responsive, touch y accesibilidad             |
+| CM-110 | complete    | CM-109     | Nueva/FEN, import/export y partidas guardadas |
+| CM-111 | in_progress | CM-110     | Responsive, touch y accesibilidad             |
 | CM-112 | pending     | CM-111     | E2E integral y gate automatizado              |
 | CM-113 | pending     | CM-112     | Smoke Windows/Android con evidencia humana    |
 
 ## Próxima tarjeta
 
-`CM-110` en `tasks/PHASE-1.md`.
+`CM-111` en `tasks/PHASE-1.md`.
 
 ## Regla de avance
 
