@@ -9,7 +9,7 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-000 | complete | —          | Auditoría, decisiones, runbook y fixtures     |
 | CM-001 | complete | CM-000     | Inicializar Git, baseline Next y lockfile     |
 | CM-002 | complete | CM-001     | Lint, typecheck, format y unit harness        |
-| CM-003 | pending  | CM-002     | Playwright/Edge y E2E smoke                   |
+| CM-003 | complete | CM-002     | Playwright/Edge y E2E smoke                   |
 | CM-004 | pending  | CM-003     | Gate baseline reproducible                    |
 | CM-101 | pending  | CM-004     | Modelo e invariantes del árbol                |
 | CM-102 | pending  | CM-101     | Replay y reglas con chess.js                  |
