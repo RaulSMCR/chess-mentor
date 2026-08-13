@@ -1,0 +1,19 @@
+[Event "First game"]
+[Site "Local"]
+[Date "2026.08.12"]
+[Round "1"]
+[White "Alice"]
+[Black "Bob"]
+[Result "*"]
+
+1. e4 *
+
+[Event "Second game"]
+[Site "Local"]
+[Date "2026.08.12"]
+[Round "2"]
+[White "Carol"]
+[Black "Dan"]
+[Result "*"]
+
+1. d4 *

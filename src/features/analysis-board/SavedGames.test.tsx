@@ -36,6 +36,7 @@ function fakeController(): GameSessionController {
     undo: vi.fn(),
     redo: vi.fn(),
     importText: vi.fn(() => ({ ok: true, warnings: [] })),
+    inspectText: vi.fn(() => ({ ok: true as const, value: [] })),
     exportText: vi.fn(() => null),
     refreshSavedGames: vi.fn(async () => undefined),
     openSaved: vi.fn(async () => true),

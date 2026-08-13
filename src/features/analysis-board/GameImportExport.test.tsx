@@ -50,6 +50,19 @@ function controller(
     undo: vi.fn(),
     redo: vi.fn(),
     importText: vi.fn(() => ({ ok: true, warnings: [] })),
+    inspectText: vi.fn(() => ({
+      ok: true as const,
+      value: [
+        {
+          index: 0,
+          title: "Prueba",
+          white: "?",
+          black: "?",
+          result: "*" as const,
+          moveCount: 1,
+        },
+      ],
+    })),
     exportText: vi.fn(() => '[Result "*"]\n\n*'),
     refreshSavedGames: vi.fn(async () => undefined),
     openSaved: vi.fn(async () => true),
@@ -111,5 +124,47 @@ describe("GameImportExport", () => {
     expect(revokeObjectURL).toHaveBeenCalledWith("blob:test");
     createObjectURL.mockRestore();
     revokeObjectURL.mockRestore();
+  });
+
+  it("permite elegir una partida dentro de una colecciÃ³n", async () => {
+    const importText = vi.fn(() => ({ ok: true, warnings: [] }));
+    const fake = controller({
+      importText,
+      inspectText: vi.fn(() => ({
+        ok: true as const,
+        value: [
+          {
+            index: 0,
+            title: "Primera",
+            white: "A",
+            black: "B",
+            result: "*" as const,
+            moveCount: 20,
+          },
+          {
+            index: 1,
+            title: "Segunda",
+            white: "C",
+            black: "D",
+            result: "*" as const,
+            moveCount: 30,
+          },
+        ],
+      })),
+    });
+    render(<GameImportExport controller={fake} />);
+    const file = new File(["collection"], "games.pgn", {
+      type: "application/x-chess-pgn",
+    });
+    fireEvent.change(screen.getByLabelText("Archivo PGN"), {
+      target: { files: [file] },
+    });
+    await waitFor(() =>
+      expect(
+        screen.getByRole("dialog", { name: "Seleccionar partida" }),
+      ).toBeInTheDocument(),
+    );
+    fireEvent.click(screen.getByRole("button", { name: /Segunda/ }));
+    expect(importText).toHaveBeenNthCalledWith(2, "collection", true, 1);
   });
 });

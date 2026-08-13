@@ -252,10 +252,10 @@ Para Fase 1 se permite snapshot completo porque los fixtures/partidas son peque�
 Contrato público:
 
 ```ts
-export const MAX_PGN_INPUT_BYTES = 1_048_576;
+export const MAX_PGN_INPUT_BYTES = 32 * 1_048_576;
 
 type PgnWarning = {
-  code: "CUSTOM_START_MOVE_NUMBER_REVALIDATED";
+  code: "CUSTOM_START_MOVE_NUMBER_REVALIDATED" | "MISSING_OPTIONAL_STR_TAG";
   message: string;
   line: number;
   column: number;
@@ -275,8 +275,8 @@ El tamaño se mide como UTF-8 mediante `new TextEncoder().encode(input).byteLeng
 Algoritmo obligatorio:
 
 1. Rechazar input vacío o mayor a `MAX_PGN_INPUT_BYTES`.
-2. Parsear una sola partida con callbacks `onError` y `onWarning`. Ambos reciben `{line,column,message,offset}` (line/column 1-based, offset 0-based); `onError` **no lanza** y el parser puede devolver `[]`. Recolectar primero todos los errors y, si hay alguno, devolver `PGN_PARSE_ERROR` antes de interpretar games. Si no hay errors pero games es 0 o >1, mostrar error de cantidad; >1 usa “Fase 1 admite una partida por importación”.
-3. Política cerrada de warnings: cualquier parser warning es `PGN_PARSE_ERROR`, salvo warnings cuyo mensaje coincide exactamente con `Move number mismatch: expected <entero>, got <entero>` **y** solo cuando existe `SetUp="1"` + FEN que después se revalida completamente con `chess.js`. Los allowlisted se mapean con ubicación a `CUSTOM_START_MOVE_NUMBER_REVALIDATED`, se conservan en orden y requieren confirmación UI. No allowlistar por substring genérico ni idioma aproximado. Duplicados son fatales porque el AST aplica last-wins y pierde valores. Escapes PGN válidos de quote/backslash sí se soportan mediante parser/stringifier, sin lexer propio.
+2. Parsear con callbacks `onError` y `onWarning`. Ambos reciben `{line,column,message,offset}` (line/column 1-based, offset 0-based); `onError` **no lanza** y el parser puede devolver `[]`. Recolectar primero todos los errors y, si hay alguno, devolver `PGN_PARSE_ERROR` antes de interpretar games. Las colecciones con varias partidas se enumeran y la UI importa explícitamente la partida elegida; nunca se descartan las demás silenciosamente.
+3. Política cerrada de warnings: se permiten únicamente los mensajes `Missing STR tag: Event|Site|Date|Round|White|Black` (se mapean a `MISSING_OPTIONAL_STR_TAG`) y `Move number mismatch: expected <entero>, got <entero>` **solo** cuando existe `SetUp="1"` + FEN que después se revalida completamente con `chess.js`. Los allowlisted se mapean con ubicación, se conservan en orden y requieren confirmación UI. No allowlistar por substring genérico ni idioma aproximado. Duplicados son fatales porque el AST aplica last-wins y pierde valores. Escapes PGN válidos de quote/backslash sí se soportan mediante parser/stringifier, sin lexer propio.
 4. Elegir root FEN con esta tabla cerrada:
 
    | `SetUp`             | `FEN`             | Resultado         |

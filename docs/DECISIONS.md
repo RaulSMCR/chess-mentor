@@ -95,9 +95,9 @@ No se usa para representar variantes, undo/redo de edición, persistencia ni PGN
 - Exportar significa convertir el árbol canónico a la estructura del adaptador, agrupar pares según turno/fullmove del FEN de inicio de cada línea y llamar al stringifier.
 - Las pruebas comparan semántica después de reimportar, no espacios o orden textual de tags.
 - Fase 1 normaliza a un único comentario post-movimiento por nodo. Bloques post-movimiento consecutivos y comentarios `;` se fusionan como equivalencia semántica admitida; comentarios raíz/pre-movimiento son error del parser. Directivas de reloj/evaluación/flechas/casillas son `UNSUPPORTED_PGN_FEATURE`, no se descartan.
-- `MAX_PGN_INPUT_BYTES = 1_048_576`, medidos como UTF-8 con `TextEncoder`; dominio y UI importan la misma constante.
+- `MAX_PGN_INPUT_BYTES = 32 * 1_048_576`, medidos como UTF-8 con `TextEncoder`; dominio y UI importan la misma constante. El importador también acepta ZIP de PGN con un único `.pgn` interno y permite elegir una partida cuando el PGN contiene varias.
 - El terminador del AST es autoritativo y se mapea literalmente: dominio `1-0/0-1/1/2-1/2/*` ↔ librería `1/0/0.5/?`. `headers.Result` debe coincidir; ausencia o mismatch es `PGN_PARSE_ERROR`.
-- Un import exitoso devuelve `{ document, warnings }`. Solo los warnings de numeración de un `SetUp/FEN` que `chess.js` revalida están allowlisted y se muestran antes de sustituir la sesión. Cualquier otro parser warning (tag duplicado/faltante, resultado inconsistente u otro) es `PGN_PARSE_ERROR`; el AST ya perdió información y no se importa con “last wins”. Nunca se entrega un árbol parcial.
+- Un import exitoso devuelve `{ document, warnings }`. Se permiten warnings de STR opcionales ausentes y de numeración de un `SetUp/FEN` que `chess.js` revalida; se muestran antes de sustituir la sesión. Duplicados, resultado inconsistente y cualquier otro parser warning son `PGN_PARSE_ERROR`; el AST ya perdió información y no se importa con “last wins”. Nunca se entrega un árbol parcial.
 
 ## D-008 — Árbol y línea principal
 

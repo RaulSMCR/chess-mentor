@@ -5,7 +5,12 @@ import { describe, expect, it } from "vitest";
 
 import { createGameDocument } from "@/domain/game-tree/replay";
 
-import { exportPgn, importPgn, MAX_PGN_INPUT_BYTES } from "./adapter";
+import {
+  exportPgn,
+  importPgn,
+  inspectPgn,
+  MAX_PGN_INPUT_BYTES,
+} from "./adapter";
 import { sameSemanticDocument } from "./semantic";
 
 const fixture = (name: string) =>
@@ -111,5 +116,22 @@ describe("PGN adapter", () => {
       ok: false,
       error: { code: "PGN_PARSE_ERROR" },
     });
+  });
+
+  it("lists a collection and imports the selected game", () => {
+    const collection = `[Event "First"]\n[Site "Local"]\n[Date "2026.08.12"]\n[Round "1"]\n[White "A"]\n[Black "B"]\n[Result "*"]\n\n1. e4 *\n\n[Event "Second"]\n[Site "Local"]\n[Date "2026.08.12"]\n[Round "2"]\n[White "C"]\n[Black "D"]\n[Result "*"]\n\n1. d4 *`;
+    const inspected = inspectPgn(collection);
+    expect(inspected.ok).toBe(true);
+    if (!inspected.ok) return;
+    expect(inspected.value).toHaveLength(2);
+    expect(inspected.value[1]).toMatchObject({
+      title: "Second",
+      white: "C",
+      black: "D",
+      moveCount: 1,
+    });
+    const imported = importPgn(collection, deps(), 1);
+    expect(imported.ok).toBe(true);
+    if (imported.ok) expect(imported.value.document.title).toBe("Second");
   });
 });

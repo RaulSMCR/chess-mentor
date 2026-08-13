@@ -24,7 +24,17 @@ import type {
 } from "@/domain/game-tree/model";
 import { assertGameDocument } from "@/domain/game-tree/invariants";
 
-export const MAX_PGN_INPUT_BYTES = 1_048_576;
+/** Maximum decoded PGN size accepted from local files (32 MiB). */
+export const MAX_PGN_INPUT_BYTES = 32 * 1_048_576;
+
+export type PgnGameSummary = Readonly<{
+  index: number;
+  title: string;
+  white: string;
+  black: string;
+  result: GameResult | "?";
+  moveCount: number;
+}>;
 
 export type PgnWarning = Readonly<{
   code: "CUSTOM_START_MOVE_NUMBER_REVALIDATED" | "MISSING_OPTIONAL_STR_TAG";
@@ -55,6 +65,11 @@ const STANDARD_FEN = new Chess().fen();
 
 const DOMAIN_RESULTS: readonly GameResult[] = ["1-0", "0-1", "1/2-1/2", "*"];
 
+type ParsedInput = Readonly<{
+  games: readonly PGN[];
+  warnings: readonly ParseWarning[];
+}>;
+
 function failure(
   code: DomainError["code"],
   message: string,
@@ -69,6 +84,75 @@ function parserContext(
   item: ParseError | ParseWarning,
 ): Readonly<Record<string, number>> {
   return { line: item.line, column: item.column, offset: item.offset };
+}
+
+function parseInput(input: string): Result<ParsedInput> {
+  if (typeof input !== "string" || input.trim() === "")
+    return failure("PGN_PARSE_ERROR", "El PGN no puede estar vacio.");
+  const bytes = new TextEncoder().encode(input).byteLength;
+  if (bytes > MAX_PGN_INPUT_BYTES)
+    return failure("PGN_PARSE_ERROR", "El PGN supera el límite de 32 MiB.", {
+      bytes,
+      limit: MAX_PGN_INPUT_BYTES,
+    });
+
+  const errors: ParseError[] = [];
+  const warnings: ParseWarning[] = [];
+  const games = parsePgn(input, {
+    onError: (item) => errors.push(item),
+    onWarning: (item) => warnings.push(item),
+  });
+  if (errors.length > 0)
+    return failure(
+      "PGN_PARSE_ERROR",
+      errors[0].message,
+      parserContext(errors[0]),
+    );
+  if (games.length === 0)
+    return failure("PGN_PARSE_ERROR", "No se encontraron partidas PGN.");
+  return { ok: true, value: { games, warnings } };
+}
+
+function notationCount(line: NotationList): number {
+  let count = 0;
+  for (const pair of line) {
+    for (const notation of [pair[1], pair[2]]) {
+      if (notation === undefined) continue;
+      count += 1;
+      for (const variant of notation.variants ?? [])
+        count += notationCount(variant);
+    }
+  }
+  return count;
+}
+
+function summaryForGame(game: PGN, index: number): PgnGameSummary {
+  const meta = game.meta as RuntimeMeta;
+  const white = typeof meta.White === "string" ? meta.White : "?";
+  const black = typeof meta.Black === "string" ? meta.Black : "?";
+  const event = typeof meta.Event === "string" ? meta.Event.trim() : "";
+  const title = event && event !== "?" ? event : `${white} vs ${black}`;
+  const result =
+    typeof meta.Result === "string" && isDomainResult(meta.Result)
+      ? meta.Result
+      : terminationToDomain(game.result);
+  return {
+    index,
+    title: title || `Partida ${index + 1}`,
+    white,
+    black,
+    result,
+    moveCount: notationCount(game.moves),
+  };
+}
+
+export function inspectPgn(input: string): Result<readonly PgnGameSummary[]> {
+  const parsed = parseInput(input);
+  if (!parsed.ok) return parsed;
+  return {
+    ok: true,
+    value: parsed.value.games.map((game, index) => summaryForGame(game, index)),
+  };
 }
 
 function terminationToDomain(value: PGN["result"]): GameResult {
@@ -250,37 +334,39 @@ function customRoot(
 export function importPgn(
   input: string,
   dependencies: PgnAdapterDependencies,
+  gameIndex?: number,
 ): ImportPgnResult {
   if (typeof input !== "string" || input.trim() === "")
     return failure("PGN_PARSE_ERROR", "El PGN no puede estar vacío.");
   const bytes = new TextEncoder().encode(input).byteLength;
   if (bytes > MAX_PGN_INPUT_BYTES)
-    return failure("PGN_PARSE_ERROR", "El PGN supera el límite de 1 MiB.", {
+    return failure("PGN_PARSE_ERROR", "El PGN supera el límite de 32 MiB.", {
       bytes,
       limit: MAX_PGN_INPUT_BYTES,
     });
 
-  const errors: ParseError[] = [];
-  const warningsRaw: ParseWarning[] = [];
-  const games = parsePgn(input, {
-    onError: (item) => errors.push(item),
-    onWarning: (item) => warningsRaw.push(item),
-  });
-  if (errors.length > 0) {
+  const parsedInput = parseInput(input);
+  if (!parsedInput.ok) return parsedInput;
+  const { games, warnings: warningsRaw } = parsedInput.value;
+  if (gameIndex === undefined && games.length !== 1)
     return failure(
       "PGN_PARSE_ERROR",
-      errors[0].message,
-      parserContext(errors[0]),
-    );
-  }
-  if (games.length !== 1)
-    return failure(
-      "PGN_PARSE_ERROR",
-      "Fase 1 admite una partida por importación.",
+      "El archivo contiene varias partidas; selecciona una para importar.",
       { games: games.length },
     );
 
-  const game = games[0];
+  const selectedIndex = gameIndex ?? 0;
+  if (
+    !Number.isInteger(selectedIndex) ||
+    selectedIndex < 0 ||
+    selectedIndex >= games.length
+  )
+    return failure("PGN_PARSE_ERROR", "La partida seleccionada no existe.", {
+      gameIndex: selectedIndex,
+      games: games.length,
+    });
+
+  const game = games[selectedIndex];
   const runtimeMeta = game.meta as RuntimeMeta;
   const termination = terminationToDomain(game.result);
   const resultHeader = parseResultHeader(runtimeMeta, termination);

@@ -38,7 +38,13 @@ import {
 } from "@/infrastructure/games/GameRepository";
 import { LocalStorageGameRepository } from "@/infrastructure/games/LocalStorageGameRepository";
 import { MemoryGameRepository } from "@/infrastructure/games/MemoryGameRepository";
-import { exportPgn, importPgn, type PgnWarning } from "@/domain/pgn/adapter";
+import {
+  exportPgn,
+  importPgn,
+  inspectPgn,
+  type PgnGameSummary,
+  type PgnWarning,
+} from "@/domain/pgn/adapter";
 import type { GameSummary } from "@/infrastructure/games/GameRepository";
 
 export const STANDARD_ROOT_FEN =
@@ -80,7 +86,11 @@ export type GameSessionController = Readonly<{
   importText: (
     text: string,
     acceptWarnings?: boolean,
+    gameIndex?: number,
   ) => { ok: true; warnings: readonly PgnWarning[] } | { ok: false };
+  inspectText: (
+    text: string,
+  ) => { ok: true; value: readonly PgnGameSummary[] } | { ok: false };
   exportText: () => string | null;
   refreshSavedGames: () => Promise<void>;
   openSaved: (id: string) => Promise<boolean>;
@@ -371,11 +381,16 @@ export function useGameSession(
     (
       text: string,
       acceptWarnings = false,
+      gameIndex?: number,
     ): { ok: true; warnings: readonly PgnWarning[] } | { ok: false } => {
-      const result = importPgn(text, {
-        idFactory: idFactoryRef.current,
-        clock: clockRef.current,
-      });
+      const result = importPgn(
+        text,
+        {
+          idFactory: idFactoryRef.current,
+          clock: clockRef.current,
+        },
+        gameIndex,
+      );
       if (!result.ok) {
         setState((current) => ({
           ...current,
@@ -392,6 +407,23 @@ export function useGameSession(
         error: null,
       }));
       return { ok: true, warnings: result.value.warnings };
+    },
+    [],
+  );
+
+  const inspectText = useCallback(
+    (
+      text: string,
+    ): { ok: true; value: readonly PgnGameSummary[] } | { ok: false } => {
+      const result = inspectPgn(text);
+      if (!result.ok) {
+        setState((current) => ({
+          ...current,
+          error: `${result.error.code}: ${result.error.message}`,
+        }));
+        return { ok: false };
+      }
+      return result;
     },
     [],
   );
@@ -499,6 +531,7 @@ export function useGameSession(
     undo: undoAction,
     redo: redoAction,
     importText,
+    inspectText,
     exportText,
     refreshSavedGames,
     openSaved,

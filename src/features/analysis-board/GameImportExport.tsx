@@ -2,9 +2,10 @@
 
 import { useRef, useState } from "react";
 
-import { MAX_PGN_INPUT_BYTES } from "@/domain/pgn/adapter";
+import { MAX_PGN_INPUT_BYTES, type PgnGameSummary } from "@/domain/pgn/adapter";
 
 import type { GameSessionController } from "./useGameSession";
+import { readPgnFile } from "./pgn-file";
 
 type GameImportExportProps = Readonly<{
   controller: GameSessionController;
@@ -43,6 +44,8 @@ export function GameImportExport({ controller }: GameImportExportProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [fen, setFen] = useState("");
   const [pendingText, setPendingText] = useState<string | null>(null);
+  const [gameChoices, setGameChoices] = useState<readonly PgnGameSummary[]>([]);
+  const [pendingGameIndex, setPendingGameIndex] = useState<number | null>(null);
   const [warnings, setWarnings] = useState<readonly string[]>([]);
   const [message, setMessage] = useState<string | null>(null);
 
@@ -55,24 +58,51 @@ export function GameImportExport({ controller }: GameImportExportProps) {
     }
   };
 
-  const chooseImport = async (file: File) => {
-    const text = await file.text();
-    const result = controller.importText(text);
+  const clearPending = () => {
+    setPendingText(null);
+    setPendingGameIndex(null);
+    setGameChoices([]);
+    setWarnings([]);
+  };
+
+  const prepareImport = (text: string, gameIndex: number) => {
+    const result = controller.importText(text, false, gameIndex);
     if (!result.ok) return;
     if (result.warnings.length > 0) {
       setPendingText(text);
+      setPendingGameIndex(gameIndex);
       setWarnings(result.warnings.map((warning) => warning.message));
       return;
     }
-    replaceIfConfirmed(() => controller.importText(text, true));
+    replaceIfConfirmed(() => {
+      controller.importText(text, true, gameIndex);
+      clearPending();
+    });
+  };
+
+  const chooseImport = async (file: File) => {
+    const read = await readPgnFile(file);
+    if (!read.ok) {
+      controller.reportError(`PGN_PARSE_ERROR: ${read.error}`);
+      return;
+    }
+    const inspected = controller.inspectText(read.text);
+    if (!inspected.ok) return;
+    if (inspected.value.length > 1) {
+      setPendingText(read.text);
+      setPendingGameIndex(null);
+      setGameChoices(inspected.value);
+      setWarnings([]);
+      return;
+    }
+    prepareImport(read.text, inspected.value[0]?.index ?? 0);
   };
 
   const acceptWarnings = () => {
-    if (pendingText === null) return;
+    if (pendingText === null || pendingGameIndex === null) return;
     replaceIfConfirmed(() => {
-      controller.importText(pendingText, true);
-      setPendingText(null);
-      setWarnings([]);
+      controller.importText(pendingText, true, pendingGameIndex);
+      clearPending();
     });
   };
 
@@ -113,7 +143,7 @@ export function GameImportExport({ controller }: GameImportExportProps) {
         </button>
         <input
           ref={inputRef}
-          accept=".pgn,application/x-chess-pgn,text/plain"
+          accept=".pgn,.zip,application/x-chess-pgn,application/zip,text/plain"
           aria-label="Archivo PGN"
           hidden
           type="file"
@@ -133,10 +163,43 @@ export function GameImportExport({ controller }: GameImportExportProps) {
       <p className="input-limit">
         Límite de importación: {MAX_PGN_INPUT_BYTES} bytes UTF-8.
       </p>
+      <p className="pgn-help">
+        Admite archivos .pgn y ZIP descargados de PGN Mentor; si contiene varias
+        partidas podrás elegir una.
+      </p>
       <p className="lan-warning">
         Modo LAN sin autenticación: usa solo datos ficticios.
       </p>
       {message === null ? null : <p role="status">{message}</p>}
+      {gameChoices.length === 0 ? null : (
+        <div
+          className="game-choices"
+          role="dialog"
+          aria-label="Seleccionar partida"
+        >
+          <h3>El archivo contiene {gameChoices.length} partidas</h3>
+          <p>Elige cual quieres abrir:</p>
+          <ol>
+            {gameChoices.map((game) => (
+              <li key={game.index}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (pendingText !== null)
+                      prepareImport(pendingText, game.index);
+                  }}
+                >
+                  {game.index + 1}. {game.title} - {game.white} vs {game.black}{" "}
+                  ({game.moveCount} jugadas)
+                </button>
+              </li>
+            ))}
+          </ol>
+          <button type="button" onClick={clearPending}>
+            Cancelar
+          </button>
+        </div>
+      )}
       {warnings.length === 0 ? null : (
         <div className="warning-box" role="alert">
           <p>El PGN contiene advertencias:</p>
@@ -151,8 +214,7 @@ export function GameImportExport({ controller }: GameImportExportProps) {
           <button
             type="button"
             onClick={() => {
-              setPendingText(null);
-              setWarnings([]);
+              clearPending();
             }}
           >
             Cancelar
