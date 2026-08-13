@@ -168,3 +168,32 @@ test("flujo 7: viewport móvil sin overflow y controles visibles", async ({
     page.getByRole("button", { name: "Importar PGN" }),
   ).toBeVisible();
 });
+
+test("flujo 8: PGN largo no deforma el tablero ni oculta navegación", async ({
+  page,
+}) => {
+  await clearAndReady(page);
+  await page.setViewportSize({ width: 390, height: 844 });
+  const longEvent = "Partida de estudio ".padEnd(240, "larga ");
+  const pgn = readFileSync(annotatedFixture, "utf8").replace(
+    '[Event "Chess Mentor Phase 1 Fixture"]',
+    `[Event "${longEvent}"]`,
+  );
+  await page.getByLabel("Archivo PGN").setInputFiles({
+    name: "partida-larga.pgn",
+    mimeType: "application/x-chess-pgn",
+    buffer: Buffer.from(pgn, "utf8"),
+  });
+  const dimensions = await page.evaluate(() => {
+    const board = document.querySelector<HTMLElement>(".board-frame");
+    return {
+      scroll: document.documentElement.scrollWidth,
+      client: document.documentElement.clientWidth,
+      boardWidth: board?.getBoundingClientRect().width ?? 0,
+    };
+  });
+  expect(dimensions.scroll).toBeLessThanOrEqual(dimensions.client);
+  expect(dimensions.boardWidth).toBeLessThanOrEqual(dimensions.client);
+  await expect(page.getByRole("button", { name: "Atrás" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Adelante" })).toBeVisible();
+});

@@ -50,16 +50,6 @@ export function AnalysisBoard({ repository }: AnalysisBoardProps) {
         getPromotionOptions={controller.promotionOptions}
         onError={controller.reportError}
       />
-      <GameToolbar
-        busy={controller.state.busy || controller.state.status === "loading"}
-        dirty={controller.dirty}
-        canUndo={controller.session?.past.length !== 0}
-        canRedo={controller.session?.future.length !== 0}
-        onNew={() => controller.newGame()}
-        onSave={() => void controller.save()}
-        onUndo={controller.undo}
-        onRedo={controller.redo}
-      />
       <section className="position-card" aria-label="Posición actual">
         <h2>Posición actual</h2>
         <p data-testid="current-fen">{node?.fen ?? "—"}</p>
@@ -80,6 +70,16 @@ export function AnalysisBoard({ repository }: AnalysisBoardProps) {
           </button>
         </div>
       </section>
+      <GameToolbar
+        busy={controller.state.busy || controller.state.status === "loading"}
+        dirty={controller.dirty}
+        canUndo={controller.session?.past.length !== 0}
+        canRedo={controller.session?.future.length !== 0}
+        onNew={() => controller.newGame()}
+        onSave={() => void controller.save()}
+        onUndo={controller.undo}
+        onRedo={controller.redo}
+      />
       {document === null ? null : (
         <>
           <MoveTree document={document} onNavigate={controller.navigate} />
