@@ -135,12 +135,17 @@ Get-NetConnectionProfile
 
 El agente no crea reglas automáticamente. Si Windows bloquea y el usuario aprueba, un administrador puede crear una regla temporal limitada al perfil Private y al puerto 3000. Debe registrar nombre exacto y procedimiento de eliminación. Nunca abrir Ollama, PostgreSQL o el worker.
 
+El worker de Fase 1.5 se inicia en una terminal separada con
+`pnpm.cmd run worker:start`. Escucha únicamente en `127.0.0.1:3210`; el
+navegador no debe llamarlo directamente. Next expone sus comprobaciones por
+`http://127.0.0.1:3000/api/health` y `/api/diagnostics`.
+
 ## 6. Puertos reservados
 
 | Puerto | Servicio                       | Bind permitido                                     |
 | -----: | ------------------------------ | -------------------------------------------------- |
 |   3000 | Next local                     | `127.0.0.1` normalmente; `0.0.0.0` solo prueba LAN |
-|   3210 | Worker futuro                  | `127.0.0.1` únicamente                             |
+|   3210 | Worker Fase 1.5                | `127.0.0.1` únicamente                             |
 |   5432 | PostgreSQL preexistente        | Fuera de alcance; no tocar                         |
 |   5433 | PostgreSQL futuro Chess Mentor | `127.0.0.1`                                        |
 |  11434 | Ollama                         | `127.0.0.1`                                        |

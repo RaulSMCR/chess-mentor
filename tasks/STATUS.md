@@ -27,11 +27,11 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-114 | complete | CM-113     | Contrato del worker y fake determinista       |
 | CM-115 | complete | CM-114     | Runtime loopback con token y capabilities     |
 | CM-116 | complete | CM-115     | Puente server-only y endpoints Next           |
-| CM-117 | pending  | CM-116     | Gate de seguridad y degradación               |
+| CM-117 | complete | CM-116     | Gate de seguridad y degradación               |
 
 ## Próxima tarjeta
 
-`CM-117` en `tasks/PHASE-1.5.md`.
+Fase 2 — Stockfish; todavía no hay tarjetas detalladas para esa fase.
 
 ## Regla de avance
 
