@@ -53,3 +53,5 @@ pnpm-debug.log*
 
 .vercel
 .env*
+.runtime/
+.worker-dist/

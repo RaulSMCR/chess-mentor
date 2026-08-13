@@ -16,6 +16,7 @@ export default defineConfig([
     ".npm-cache/**",
     ".pnpm-cache/**",
     ".pnpm-store/**",
+    ".worker-dist/**",
     "next-env.d.ts",
   ]),
 ]);

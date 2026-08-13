@@ -20,7 +20,9 @@
     "test:e2e": "pnpm run test:e2e:only",
     "test:e2e:only": "playwright test",
     "verify": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run test:unit && pnpm run build",
-    "verify:phase1": "pnpm run verify && pnpm run test:e2e"
+    "verify:phase1": "pnpm run verify && pnpm run test:e2e",
+    "worker:build": "tsc -p worker/tsconfig.json",
+    "worker:start": "pnpm run worker:build && node .worker-dist/worker/server.js"
   },
   "dependencies": {
     "@echecs/pgn": "5.0.0",

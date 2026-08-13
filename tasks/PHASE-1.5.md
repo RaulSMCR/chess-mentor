@@ -145,7 +145,8 @@ diagnostics con token, rechaza rutas/métodos desconocidos y nunca escucha en
 - `worker/token.ts`.
 - `worker/tsconfig.json`.
 - `package.json` solo para los scripts `worker:build` y `worker:start`.
-- `.gitignore` únicamente para `.runtime/`.
+- `.gitignore` únicamente para `.runtime/` y `.worker-dist/` generados.
+- `eslint.config.mjs` solo para ignorar `.worker-dist/**` generado.
 - `tasks/STATUS.md`.
 
 ## Archivos prohibidos
@@ -188,7 +189,7 @@ pnpm.cmd run verify
 ## Commit local de cierre
 
 - Mensaje: `CM-115: add loopback worker runtime`
-- Stage permitido: `worker/server.ts worker/server.test.ts worker/token.ts worker/tsconfig.json package.json .gitignore tasks/STATUS.md`
+- Stage permitido: `worker/server.ts worker/server.test.ts worker/token.ts worker/tsconfig.json package.json .gitignore eslint.config.mjs tasks/STATUS.md`
 
 ## Condiciones de parada
 

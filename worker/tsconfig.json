@@ -1,0 +1,16 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "types": ["node"],
+    "outDir": "../.worker-dist",
+    "rootDir": "..",
+    "noEmit": false,
+    "declaration": false,
+    "sourceMap": false,
+    "incremental": false
+  },
+  "include": ["./protocol.ts", "./server.ts", "./token.ts"],
+  "exclude": ["./**/*.test.ts"]
+}
