@@ -1,0 +1,10 @@
+# CM-121: líneas UCI sintéticas para parser, perspectiva y MultiPV
+info depth 12 seldepth 18 multipv 1 score cp 34 nodes 100 pv e2e4 e7e5 g1f3
+info depth 12 seldepth 18 multipv 2 score mate 3 nodes 100 pv d2d4 d7d5
+info depth 12 multipv 2 score cp 35 pv c2c4 c7c5
+info depth 10 score cp -45 pv e7e5 e2e4
+info depth 8 score cp 12 pv e2e4 e7e5 string comentario UCI
+info depth 12 nodes 42
+bestmove e2e4 ponder e7e5
+bestmove 0000
+uciok
