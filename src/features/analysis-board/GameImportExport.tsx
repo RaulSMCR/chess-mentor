@@ -159,6 +159,14 @@ export function GameImportExport({ controller }: GameImportExportProps) {
         <button type="button" onClick={exportCurrent}>
           Exportar PGN
         </button>
+        <a
+          className="pgn-mentor-link"
+          href="https://www.pgnmentor.com/files.html"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Abrir biblioteca PGN Mentor
+        </a>
       </div>
       <p className="input-limit">
         Límite de importación: {MAX_PGN_INPUT_BYTES} bytes UTF-8.

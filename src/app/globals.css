@@ -138,6 +138,21 @@ button:disabled {
   padding: 0.5rem;
 }
 
+.pgn-mentor-link {
+  display: inline-block;
+  border: 1px solid #4b5563;
+  border-radius: 0.35rem;
+  padding: 0.65rem 0.75rem;
+  color: #17202a;
+  text-align: center;
+  text-decoration: none;
+}
+
+.pgn-mentor-link:focus-visible {
+  outline: 3px solid #1d4ed8;
+  outline-offset: 2px;
+}
+
 .input-limit {
   color: #52606d;
   font-size: 0.8rem;
