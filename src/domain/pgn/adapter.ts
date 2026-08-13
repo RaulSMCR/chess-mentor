@@ -27,7 +27,7 @@ import { assertGameDocument } from "@/domain/game-tree/invariants";
 export const MAX_PGN_INPUT_BYTES = 1_048_576;
 
 export type PgnWarning = Readonly<{
-  code: "CUSTOM_START_MOVE_NUMBER_REVALIDATED";
+  code: "CUSTOM_START_MOVE_NUMBER_REVALIDATED" | "MISSING_OPTIONAL_STR_TAG";
   message: string;
   line: number;
   column: number;
@@ -293,16 +293,25 @@ export function importPgn(
     const match = /^Move number mismatch: expected \d+, got \d+$/.test(
       warning.message,
     );
-    if (!match || !rootResult.value.custom)
-      return failure(
-        "PGN_PARSE_ERROR",
+    if (match && rootResult.value.custom) {
+      allowedWarnings.push({
+        code: "CUSTOM_START_MOVE_NUMBER_REVALIDATED",
+        ...warning,
+      });
+      continue;
+    }
+    if (
+      /^Missing STR tag: (Event|Site|Date|Round|White|Black)$/.test(
         warning.message,
-        parserContext(warning),
-      );
-    allowedWarnings.push({
-      code: "CUSTOM_START_MOVE_NUMBER_REVALIDATED",
-      ...warning,
-    });
+      )
+    ) {
+      allowedWarnings.push({
+        code: "MISSING_OPTIONAL_STR_TAG",
+        ...warning,
+      });
+      continue;
+    }
+    return failure("PGN_PARSE_ERROR", warning.message, parserContext(warning));
   }
 
   const unsupported = collectUnsupported(game.moves);
@@ -499,6 +508,12 @@ export function exportPgn(document: GameDocumentV1): Result<string> {
     if (root === undefined || root.kind !== "root")
       return failure("INVALID_DOCUMENT", "Root inexistente.");
     const meta: Record<string, string> = {
+      Event: document.headers.Event ?? "Chess Mentor",
+      Site: document.headers.Site ?? "Local",
+      Date: document.headers.Date ?? "????.??.??",
+      Round: document.headers.Round ?? "?",
+      White: document.headers.White ?? "?",
+      Black: document.headers.Black ?? "?",
       ...document.headers,
       Result: document.result,
     };

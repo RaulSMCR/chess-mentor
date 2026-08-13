@@ -1,6 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
+import { Chess } from "chess.js";
 import { describe, expect, it } from "vitest";
+
+import { createGameDocument } from "@/domain/game-tree/replay";
 
 import { exportPgn, importPgn, MAX_PGN_INPUT_BYTES } from "./adapter";
 import { sameSemanticDocument } from "./semantic";
@@ -63,6 +66,38 @@ describe("PGN adapter", () => {
     expect(
       importPgn(fixture("unsupported-directives.pgn"), deps()),
     ).toMatchObject({ ok: false, error: { code: "UNSUPPORTED_PGN_FEATURE" } });
+  });
+
+  it("round-trips a fresh game and accepts missing optional STR tags", () => {
+    const fresh = createGameDocument({
+      rootFen: new Chess().fen(),
+      idFactory: (() => {
+        let id = 0;
+        return () => `fresh-${id++}`;
+      })(),
+      clock: () => "2026-08-12T18:00:00.000Z",
+    });
+    expect(fresh.ok).toBe(true);
+    if (!fresh.ok) return;
+    const exported = exportPgn(fresh.value);
+    expect(exported.ok).toBe(true);
+    if (!exported.ok) return;
+    const reparsed = importPgn(exported.value, deps());
+    expect(reparsed.ok).toBe(true);
+
+    const minimal = `[Event "Minimal"]\n[White "A"]\n[Result "*"]\n\n1. e4 *`;
+    const imported = importPgn(minimal, deps());
+    expect(imported.ok).toBe(true);
+    if (imported.ok) {
+      expect(imported.value.warnings).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            code: "MISSING_OPTIONAL_STR_TAG",
+            message: "Missing STR tag: Black",
+          }),
+        ]),
+      );
+    }
   });
 
   it("enforces UTF-8 size boundaries", () => {
