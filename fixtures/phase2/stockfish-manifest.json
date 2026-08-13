@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "engine": "Stockfish",
+  "engineVersion": "18",
+  "packageVersion": "18.0.5",
+  "flavor": "lite-single-threaded",
+  "license": "GPL-3.0",
+  "verifiedAt": "2026-08-13",
+  "upstream": {
+    "project": "official-stockfish/Stockfish",
+    "releaseUrl": "https://github.com/official-stockfish/Stockfish/releases/tag/sf_18",
+    "sourceUrl": "https://github.com/official-stockfish/Stockfish"
+  },
+  "browserBuild": {
+    "project": "nmrugg/stockfish.js",
+    "sourceUrl": "https://github.com/nmrugg/stockfish.js",
+    "packageUrl": "https://www.npmjs.com/package/stockfish",
+    "licenseUrl": "https://raw.githubusercontent.com/nmrugg/stockfish.js/master/Copying.txt"
+  },
+  "assets": [
+    {
+      "file": "stockfish-18-lite-single.js",
+      "url": "https://unpkg.com/stockfish@18.0.5/bin/stockfish-18-lite-single.js",
+      "bytes": 20670,
+      "sha256": "2278005057f381491f1c9bb3e44c9f5920b3a00bef9759e33cc6582769a1f1fe"
+    },
+    {
+      "file": "stockfish-18-lite-single.wasm",
+      "url": "https://unpkg.com/stockfish@18.0.5/bin/stockfish-18-lite-single.wasm",
+      "bytes": 7295411,
+      "sha256": "a8fbc05ec6920b56d7485826dcb02c5ffd2826bcbf751cf973046f237a9096f1"
+    }
+  ]
+}
