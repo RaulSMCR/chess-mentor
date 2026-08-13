@@ -27,7 +27,10 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 
 ## Próxima tarjeta
 
-`CM-113` en `tasks/PHASE-1.md`.
+Fase 1.5 — desglosar las tarjetas detalladas del worker local y seguridad.
+
+Todavía no existe una tarjeta `CM-114`; debe crearse antes de editar código de
+la Fase 1.5.
 
 ## Regla de avance
 
