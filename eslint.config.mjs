@@ -17,6 +17,7 @@ export default defineConfig([
     ".pnpm-cache/**",
     ".pnpm-store/**",
     ".worker-dist/**",
+    "public/stockfish/**",
     "next-env.d.ts",
   ]),
 ]);

@@ -30,7 +30,7 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-117 | complete | CM-116     | Gate de seguridad y degradación               |
 | CM-118 | complete | CM-117     | Contrato EngineAdapter y fake determinista    |
 | CM-119 | complete | CM-118     | Inventario, licencia y checksum Stockfish     |
-| CM-120 | pending  | CM-119     | Worker UCI del navegador                      |
+| CM-120 | complete | CM-119     | Worker UCI del navegador                      |
 | CM-121 | pending  | CM-120     | Parser de score, MultiPV y perspectiva        |
 | CM-122 | pending  | CM-121     | Cancelación y descarte de análisis obsoleto   |
 | CM-123 | pending  | CM-122     | UI de análisis y navegación de PV             |

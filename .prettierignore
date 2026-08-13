@@ -5,6 +5,7 @@ coverage/
 playwright-report/
 test-results/
 public/*.svg
+public/stockfish/**
 tools/*.cmd
 blob-report/
 node_modules/

@@ -7,9 +7,9 @@ Stockfish 18 lite single-threaded para navegador. Se descargaron
 temporalmente fuera del repositorio, se calcularon sus SHA-256 y se registró
 el resultado en `fixtures/phase2/stockfish-manifest.json`.
 
-Los binarios todavía no están dentro de `public/`, no están en Git y no se
-distribuyen con la aplicación. La integración del Worker corresponde a
-CM-120, después de esta revisión de procedencia y licencia.
+CM-119 dejó los binarios fuera del repositorio. CM-120 los copia ahora a
+`public/stockfish/` junto con `Copying.txt` para que el Worker del navegador
+pueda cargarlos. No se distribuye un ejecutable nativo.
 
 ## Asset aprobado
 
@@ -61,13 +61,19 @@ En Windows PowerShell también puede ejecutarse:
 
 El script falla si falta un asset, aparece una variante distinta, cambia el
 tamaño, no coincide el SHA-256 o el manifest no declara GPL-3.0. Por defecto
-busca en `public\stockfish`, pero esa carpeta permanece vacía hasta que una
-tarjeta posterior autorice la integración y la distribución.
+busca en `public\stockfish`, que ahora contiene los dos assets aprobados.
+
+## Integración CM-120
+
+Los archivos versionados en `public/stockfish/` son exactamente los que figuran
+en el manifest. El loader JS busca `stockfish-18-lite-single.wasm` en el mismo
+directorio y el adaptador lo ejecuta en un Worker clásico, sin
+`SharedArrayBuffer`, COOP ni COEP.
 
 ## Alcance de distribución
 
 - CM-119: procedencia, licencia, tamaños y hashes registrados.
-- CM-120: integración opcional en Web Worker, aún pendiente.
+- CM-120: integración opcional en Web Worker completada; la UI todavía no la
+  consume hasta CM-123.
 - No se distribuye un ejecutable nativo ni se instala Stockfish en el sistema.
-- No se modifica `package.json` ni se añade una dependencia para el motor en
-  esta tarjeta.
+- No se modifica `package.json` ni se añade una dependencia para el motor.
