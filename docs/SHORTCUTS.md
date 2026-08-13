@@ -2,7 +2,8 @@
 
 ## Teléfono Android
 
-Con el servidor publicado en Vercel, abre la URL HTTPS en Chrome y elige
+La URL pública actual es
+`https://chess-mentor-gilt.vercel.app`. Ábrela en Chrome y elige
 `⋮ → Agregar a pantalla de inicio` o `Instalar aplicación`. El manifiesto de
 Chess Mentor usa modo independiente, por lo que se abre como una aplicación.
 
@@ -11,6 +12,9 @@ pantalla de inicio, pero solo funcionará si la PC está encendida y ambos
 dispositivos permanecen en la misma red Wi‑Fi.
 
 ## Windows
+
+Se creó el acceso directo `Chess Mentor.lnk` en el Escritorio; abre directamente
+la versión pública de Vercel.
 
 Haz doble clic en `tools/open-chess-mentor.cmd`. El script inicia `dev:lan` y
 abre `http://127.0.0.1:3000`. Para crear un acceso directo: clic derecho sobre
