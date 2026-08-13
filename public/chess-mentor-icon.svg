@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Chess Mentor</title>
+  <desc id="desc">Caballo de ajedrez blanco sobre un tablero oscuro</desc>
+  <rect width="512" height="512" rx="96" fill="#17202a"/>
+  <path fill="#f7f8fa" d="M155 414h202v-34H155v34Zm18-58h166l-18-30c-8-13-10-27-5-41 8-24 7-53-7-78-13-24-35-43-64-50l17-35-26-12-19 40c-30 1-58 16-77 40-22 29-29 69-19 105 8 28 5 48-8 65l-18 24h78Zm-32-45c18-27 21-58 11-91-6-24-1-50 14-70 15-20 38-32 64-34 25-2 49 8 66 27 17 19 25 44 21 69-3 20-1 38 10 56l18 29H141Z"/>
+  <path fill="#d6d9dc" d="M196 261c26 8 51 7 75-4 23-11 39-29 47-53 7 19 8 38 3 55-8 26-25 46-50 58-25 12-52 13-78 3l-15-6 18-53Z"/>
+</svg>
