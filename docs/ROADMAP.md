@@ -92,6 +92,8 @@ en orden después del gate de Fase 1, sin reabrir decisiones del núcleo.
 
 ## 6. Fase 2 — Stockfish
 
+Tarjetas: `CM-118` a `CM-124` en `tasks/PHASE-2.md`.
+
 ### Subfases
 
 1. Contrato `EngineAdapter` y fake determinista.

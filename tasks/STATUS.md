@@ -28,10 +28,17 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-115 | complete | CM-114     | Runtime loopback con token y capabilities     |
 | CM-116 | complete | CM-115     | Puente server-only y endpoints Next           |
 | CM-117 | complete | CM-116     | Gate de seguridad y degradación               |
+| CM-118 | pending  | CM-117     | Contrato EngineAdapter y fake determinista    |
+| CM-119 | pending  | CM-118     | Inventario, licencia y checksum Stockfish     |
+| CM-120 | pending  | CM-119     | Worker UCI del navegador                      |
+| CM-121 | pending  | CM-120     | Parser de score, MultiPV y perspectiva        |
+| CM-122 | pending  | CM-121     | Cancelación y descarte de análisis obsoleto   |
+| CM-123 | pending  | CM-122     | UI de análisis y navegación de PV             |
+| CM-124 | pending  | CM-123     | Comparación de jugada y gate Stockfish        |
 
 ## Próxima tarjeta
 
-Fase 2 — Stockfish; todavía no hay tarjetas detalladas para esa fase.
+`CM-118` en `tasks/PHASE-2.md`.
 
 ## Regla de avance
 
