@@ -21,6 +21,7 @@
     "*.ts",
     "src/**/*.ts",
     "src/**/*.tsx",
+    "worker/**/*.ts",
     "tests/**/*.ts",
     "tests/**/*.tsx",
     ".next/types/**/*.ts",

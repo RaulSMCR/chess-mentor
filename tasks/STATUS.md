@@ -24,14 +24,14 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-111 | complete | CM-110     | Responsive, touch y accesibilidad             |
 | CM-112 | complete | CM-111     | E2E integral y gate automatizado              |
 | CM-113 | complete | CM-112     | Smoke público Android con evidencia humana    |
-| CM-114 | pending  | CM-113     | Contrato del worker y fake determinista       |
+| CM-114 | complete | CM-113     | Contrato del worker y fake determinista       |
 | CM-115 | pending  | CM-114     | Runtime loopback con token y capabilities     |
 | CM-116 | pending  | CM-115     | Puente server-only y endpoints Next           |
 | CM-117 | pending  | CM-116     | Gate de seguridad y degradación               |
 
 ## Próxima tarjeta
 
-`CM-114` en `tasks/PHASE-1.5.md`.
+`CM-115` en `tasks/PHASE-1.5.md`.
 
 ## Regla de avance
 
