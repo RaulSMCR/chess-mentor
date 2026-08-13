@@ -70,7 +70,8 @@ Vertical slice offline con árbol, PGN anotado, persistencia local y UI responsi
 
 ## 5. Fase 1.5 — Worker y seguridad local
 
-Se escriben tarjetas detalladas solo después del gate de Fase 1, sin reabrir decisiones del núcleo.
+Tarjetas detalladas: `CM-114` a `CM-117` en `tasks/PHASE-1.5.md`. Se ejecutan
+en orden después del gate de Fase 1, sin reabrir decisiones del núcleo.
 
 ### Alcance
 

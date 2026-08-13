@@ -24,13 +24,14 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-111 | complete | CM-110     | Responsive, touch y accesibilidad             |
 | CM-112 | complete | CM-111     | E2E integral y gate automatizado              |
 | CM-113 | complete | CM-112     | Smoke público Android con evidencia humana    |
+| CM-114 | pending  | CM-113     | Contrato del worker y fake determinista       |
+| CM-115 | pending  | CM-114     | Runtime loopback con token y capabilities     |
+| CM-116 | pending  | CM-115     | Puente server-only y endpoints Next           |
+| CM-117 | pending  | CM-116     | Gate de seguridad y degradación               |
 
 ## Próxima tarjeta
 
-Fase 1.5 — desglosar las tarjetas detalladas del worker local y seguridad.
-
-Todavía no existe una tarjeta `CM-114`; debe crearse antes de editar código de
-la Fase 1.5.
+`CM-114` en `tasks/PHASE-1.5.md`.
 
 ## Regla de avance
 
