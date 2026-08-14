@@ -38,14 +38,14 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-300 | complete | CM-124     | Políticas y tarjetas de Fase 3                |
 | CM-301 | complete | CM-300     | Contrato de ejercicios y aceptación           |
 | CM-302 | complete | CM-301     | Pistas y puntuación deterministas             |
-| CM-303 | pending  | CM-302     | Scheduler SM-2 con reloj inyectable           |
+| CM-303 | complete | CM-302     | Scheduler SM-2 con reloj inyectable           |
 | CM-304 | pending  | CM-303     | Repositorio local de ejercicios               |
 | CM-305 | pending  | CM-304     | Variante corta opcional del motor             |
 | CM-306 | pending  | CM-305     | UI y gate de Fase 3                           |
 
 ## Próxima tarjeta
 
-`CM-303` en `tasks/PHASE-3.md`.
+`CM-304` en `tasks/PHASE-3.md`.
 
 ## Regla de avance
 
