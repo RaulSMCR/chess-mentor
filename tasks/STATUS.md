@@ -36,7 +36,7 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-123 | complete | CM-122     | UI de análisis y navegación de PV             |
 | CM-124 | complete | CM-123     | Comparación de jugada y gate Stockfish        |
 | CM-300 | complete | CM-124     | Políticas y tarjetas de Fase 3                |
-| CM-301 | pending  | CM-300     | Contrato de ejercicios y aceptación           |
+| CM-301 | complete | CM-300     | Contrato de ejercicios y aceptación           |
 | CM-302 | pending  | CM-301     | Pistas y puntuación deterministas             |
 | CM-303 | pending  | CM-302     | Scheduler SM-2 con reloj inyectable           |
 | CM-304 | pending  | CM-303     | Repositorio local de ejercicios               |
@@ -45,7 +45,7 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 
 ## Próxima tarjeta
 
-`CM-301` en `tasks/PHASE-3.md`.
+`CM-302` en `tasks/PHASE-3.md`.
 
 ## Regla de avance
 
