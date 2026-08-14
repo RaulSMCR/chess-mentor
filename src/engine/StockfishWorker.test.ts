@@ -114,4 +114,30 @@ describe("StockfishWorkerAdapter", () => {
     expect(createdUrl).toBe(STOCKFISH_ENGINE_URL);
     expect(worker.commands.at(-1)).toBe("<terminate>");
   });
+
+  it("termina y recrea el Worker después de un error irrecuperable", async () => {
+    const firstWorker = new FakeWorker();
+    const secondWorker = new FakeWorker();
+    const workers = [firstWorker, secondWorker];
+    let created = 0;
+    const adapter = new StockfishWorkerAdapter({
+      workerFactory: () => {
+        const worker = workers[created];
+        created += 1;
+        if (!worker) throw new Error("worker factory exhausted");
+        return worker;
+      },
+    });
+
+    await collect(adapter.analyze(REQUEST));
+    firstWorker.onerror?.(new Error("worker crashed"));
+    await collect(
+      adapter.analyze({ ...REQUEST, requestId: "worker-request-2" }),
+    );
+    await adapter.dispose();
+
+    expect(created).toBe(2);
+    expect(firstWorker.commands).toContain("<terminate>");
+    expect(secondWorker.commands).toContain("uci");
+  });
 });

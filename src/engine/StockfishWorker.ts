@@ -224,7 +224,7 @@ export class StockfishWorkerAdapter implements EngineAdapter {
       await this.sendAndWait("isready", "readyok");
       this.initialized = true;
     })().catch((error: unknown) => {
-      this.initialization = null;
+      this.resetWorker();
       throw error;
     });
     return this.initialization;
@@ -271,6 +271,14 @@ export class StockfishWorkerAdapter implements EngineAdapter {
     this.markerWaiters.clear();
   }
 
+  private resetWorker(): void {
+    const worker = this.worker;
+    this.worker = null;
+    this.initialized = false;
+    this.initialization = null;
+    worker?.terminate();
+  }
+
   private handleMessage(data: unknown): void {
     if (!isWorkerLine(data)) return;
     const line = data.trim();
@@ -314,7 +322,6 @@ export class StockfishWorkerAdapter implements EngineAdapter {
     this.rejectMarkerWaiters(error);
     this.active?.queue.end(error);
     this.active = null;
-    this.initialization = null;
-    this.initialized = false;
+    this.resetWorker();
   }
 }
