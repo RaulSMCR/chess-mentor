@@ -34,11 +34,12 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-121 | complete | CM-120     | Parser de score, MultiPV y perspectiva        |
 | CM-122 | complete | CM-121     | Cancelación y descarte de análisis obsoleto   |
 | CM-123 | complete | CM-122     | UI de análisis y navegación de PV             |
-| CM-124 | pending  | CM-123     | Comparación de jugada y gate Stockfish        |
+| CM-124 | complete | CM-123     | Comparación de jugada y gate Stockfish        |
 
 ## Próxima tarjeta
 
-`CM-124` en `tasks/PHASE-2.md`.
+No hay tarjeta elegible: CM-124 cierra Fase 2; Fase 3 requiere nuevas tarjetas y
+el gate de Fase 2 ya está documentado.
 
 ## Regla de avance
 
