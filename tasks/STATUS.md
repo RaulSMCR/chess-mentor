@@ -40,12 +40,12 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-302 | complete | CM-301     | Pistas y puntuación deterministas             |
 | CM-303 | complete | CM-302     | Scheduler SM-2 con reloj inyectable           |
 | CM-304 | complete | CM-303     | Repositorio local de ejercicios               |
-| CM-305 | pending  | CM-304     | Variante corta opcional del motor             |
+| CM-305 | complete | CM-304     | Variante corta opcional del motor             |
 | CM-306 | pending  | CM-305     | UI y gate de Fase 3                           |
 
 ## Próxima tarjeta
 
-`CM-305` en `tasks/PHASE-3.md`.
+`CM-306` en `tasks/PHASE-3.md`.
 
 ## Regla de avance
 
