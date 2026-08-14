@@ -30,6 +30,9 @@ describe("evaluateAttempt", () => {
         correct: true,
         timedOut: false,
         elapsedMs: 1_000,
+        hintsUsed: [],
+        penalty: 0,
+        score: 5,
         quality: 5,
       },
     });
@@ -50,7 +53,7 @@ describe("evaluateAttempt", () => {
 
     expect(wrong).toMatchObject({
       ok: true,
-      value: { legal: true, correct: false, quality: 0 },
+      value: { legal: true, correct: false, score: 0, quality: 0 },
     });
     expect(illegal).toMatchObject({
       ok: true,
@@ -59,6 +62,40 @@ describe("evaluateAttempt", () => {
     expect(timeout).toMatchObject({
       ok: true,
       value: { timedOut: true, correct: false, quality: 2 },
+    });
+  });
+
+  it("descuenta una unidad por cada pista y conserva la calidad del scheduler", () => {
+    const result = evaluateAttempt({
+      exercise,
+      move: "e2e4",
+      elapsedMs: 1_000,
+      hintsUsed: ["concept", "destination"],
+    });
+
+    expect(result).toMatchObject({
+      ok: true,
+      value: {
+        correct: true,
+        hintsUsed: ["concept", "destination"],
+        penalty: 2,
+        score: 3,
+        quality: 3,
+      },
+    });
+  });
+
+  it("rechaza una secuencia de pistas inválida", () => {
+    const result = evaluateAttempt({
+      exercise,
+      move: "e2e4",
+      elapsedMs: 1_000,
+      hintsUsed: ["engine", "concept"],
+    });
+
+    expect(result).toMatchObject({
+      ok: false,
+      error: { code: "INVALID_ATTEMPT" },
     });
   });
 
