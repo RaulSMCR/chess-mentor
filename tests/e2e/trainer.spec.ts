@@ -51,6 +51,8 @@ test("entrenador: crear, pedir pistas y evaluar sin Stockfish", async ({
   );
   await page.mouse.up();
   await expect(trainer.getByLabel("Jugada UCI")).toHaveValue("e2e4");
+  await expect(sourceSquare.locator("[data-piece]")).toHaveCount(0);
+  await expect(targetSquare.locator("[data-piece]")).toHaveCount(1);
   await trainer.getByRole("button", { name: "Evaluar jugada" }).click();
   await expect(trainer.getByText(/Puntuación: 4\/5 · calidad 4/)).toBeVisible();
   await expect(

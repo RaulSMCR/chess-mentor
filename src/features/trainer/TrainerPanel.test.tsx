@@ -11,6 +11,8 @@ vi.mock("react-chessboard", () => ({
   }: {
     options: {
       position?: string;
+      onMouseOverSquare?: (input: { square: string }) => void;
+      onPieceDrag?: (input: { square: string | null }) => void;
       onPieceDrop?: (input: {
         sourceSquare: string;
         targetSquare: string | null;
@@ -29,6 +31,18 @@ vi.mock("react-chessboard", () => ({
         }
       >
         mover e2-e4
+      </button>
+      <button
+        type="button"
+        onClick={() => options.onPieceDrag?.({ square: "e2" })}
+      >
+        iniciar arrastre e2
+      </button>
+      <button
+        type="button"
+        onClick={() => options.onMouseOverSquare?.({ square: "e4" })}
+      >
+        pasar sobre e4
       </button>
     </div>
   ),
@@ -128,6 +142,20 @@ describe("TrainerPanel", () => {
     expect(screen.getByTestId("trainer-board")).toHaveAttribute(
       "data-position",
       expect.stringContaining("4P3"),
+    );
+  });
+
+  it("confirma el destino con el fallback de toque al terminar un arrastre", async () => {
+    renderPanel();
+    await createExercise();
+    fireEvent.click(screen.getByRole("button", { name: "Iniciar intento" }));
+    fireEvent.click(
+      screen.getByRole("button", { name: "iniciar arrastre e2" }),
+    );
+    fireEvent.click(screen.getByRole("button", { name: "pasar sobre e4" }));
+    fireEvent.touchEnd(screen.getByLabelText("Tablero temporal del ejercicio"));
+    await waitFor(() =>
+      expect(screen.getByLabelText("Jugada UCI")).toHaveValue("e2e4"),
     );
   });
 });

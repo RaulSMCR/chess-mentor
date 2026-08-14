@@ -267,6 +267,8 @@ export function TrainerPanel({
   const [activeTab, setActiveTab] = useState<TrainerTab>("library");
   const [selectedSquare, setSelectedSquare] = useState<string | null>(null);
   const [boardFen, setBoardFen] = useState<string | null>(null);
+  const [dragSourceSquare, setDragSourceSquare] = useState<string | null>(null);
+  const [dragOverSquare, setDragOverSquare] = useState<string | null>(null);
   const [pendingPromotion, setPendingPromotion] =
     useState<PendingPromotion | null>(null);
   const [status, setStatus] = useState("Preparado para crear un ejercicio.");
@@ -314,6 +316,8 @@ export function TrainerPanel({
     setActiveTab("practice");
     setSelectedSquare(null);
     setBoardFen(record.exercise.fen);
+    setDragSourceSquare(null);
+    setDragOverSquare(null);
     setPendingPromotion(null);
     attemptStartedAtRef.current = null;
     setAttemptActive(false);
@@ -356,6 +360,35 @@ export function TrainerPanel({
     },
     [chooseBoardMove],
   );
+
+  const handlePieceDrag = useCallback(
+    ({ square }: { square: string | null }) => {
+      setDragSourceSquare(square);
+      setDragOverSquare(square);
+    },
+    [],
+  );
+
+  const handleMouseOverSquare = useCallback(
+    ({ square }: { square: string }) => {
+      if (dragSourceSquare !== null) setDragOverSquare(square);
+    },
+    [dragSourceSquare],
+  );
+
+  const handlePieceDragCancel = useCallback(() => {
+    setDragSourceSquare(null);
+    setDragOverSquare(null);
+  }, []);
+
+  const handleBoardTouchEnd = useCallback(() => {
+    if (dragSourceSquare === null || dragOverSquare === null) return;
+    const source = dragSourceSquare;
+    const target = dragOverSquare;
+    setDragSourceSquare(null);
+    setDragOverSquare(null);
+    if (source !== target) chooseBoardMove(source, target);
+  }, [chooseBoardMove, dragOverSquare, dragSourceSquare]);
 
   const handleBoardSquareClick = useCallback(
     ({ square }: { square: string }) => {
@@ -457,6 +490,8 @@ export function TrainerPanel({
     setAttemptResult(null);
     setMove("");
     setBoardFen(selected.exercise.fen);
+    setDragSourceSquare(null);
+    setDragOverSquare(null);
     setSelectedSquare(null);
     setPendingPromotion(null);
     setHintsUsed([]);
@@ -519,6 +554,8 @@ export function TrainerPanel({
       attemptStartedAtRef.current = null;
       setAttemptActive(false);
       setSelectedSquare(null);
+      setDragSourceSquare(null);
+      setDragOverSquare(null);
       setPendingPromotion(null);
       setStatus("Intento guardado localmente.");
     } catch (error) {
@@ -723,11 +760,17 @@ export function TrainerPanel({
                 <div
                   className="trainer-board-frame"
                   aria-label="Tablero temporal del ejercicio"
+                  onTouchEnd={handleBoardTouchEnd}
                 >
                   <Chessboard
+                    key={boardFen ?? selected.exercise.fen}
                     options={{
                       position: boardFen ?? selected.exercise.fen,
+                      showAnimations: false,
                       allowDragging: attemptActive && !busy,
+                      onMouseOverSquare: handleMouseOverSquare,
+                      onPieceDrag: handlePieceDrag,
+                      onPieceDragCancel: handlePieceDragCancel,
                       onPieceDrop: handleBoardDrop,
                       onSquareClick: handleBoardSquareClick,
                     }}
