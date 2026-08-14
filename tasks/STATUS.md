@@ -46,7 +46,8 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 
 ## Próxima tarjeta
 
-`CM-306` en `tasks/PHASE-3.md`.
+No hay una tarjeta posterior definida. Fase 3 queda cerrada; la siguiente
+prioridad requiere crear/aprobar la tarjeta de integraciÃ³n con Supabase.
 
 ## Regla de avance
 
