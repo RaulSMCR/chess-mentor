@@ -223,3 +223,49 @@ Actualizar una versión o decisión requiere:
 3. actualizar lockfile y documentación;
 4. ejecutar la matriz global;
 5. obtener aprobación si cambia alcance, licencia, seguridad o datos.
+
+## D-025 — Aceptación de jugadas del entrenador
+
+- Un ejercicio persiste `acceptedMoves` como un conjunto de UCI normalizado en
+  minúsculas, incluida la promoción. Una jugada exacta es un conjunto de un
+  solo elemento.
+- Un ejercicio generado desde Stockfish puede incluir las líneas MultiPV cuyo
+  score esté a como máximo 50 centipawns de la mejor línea, siempre desde la
+  misma perspectiva blanca. La política se materializa al crear el ejercicio;
+  intentar no recalcula la respuesta ni modifica el ejercicio.
+- La legalidad se valida reproduciendo el FEN del ejercicio con `chess.js`.
+  SAN, texto libre y similitud de piezas no cuentan como equivalencia.
+
+## D-026 — Pistas y penalización
+
+- Las pistas son tres niveles ordenados: `concept`, `destination` y `engine`.
+- `concept` describe la idea sin indicar una casilla; `destination` indica la
+  casilla destino sin indicar la jugada completa; `engine` muestra la primera
+  jugada aceptada. Pedir una pista no revela inmediatamente la solución.
+- Cada nivel añade una penalización fija de 1 punto al intento. El intento
+  conserva los niveles solicitados en orden y no puede pedir un nivel posterior
+  sin haber pedido los anteriores.
+
+## D-027 — Scheduler determinista SM-2
+
+- La repetición usa SM-2 sin dependencia externa, con calidad entera de 0 a 5,
+  factor de facilidad inicial 2.5 y mínimo 1.3.
+- Calidad menor que 3 reinicia repeticiones e intervalo; la primera respuesta
+  correcta fija 1 día y la segunda 6 días. Las posteriores redondean el
+  intervalo calculado al día entero más cercano.
+- `nextDueAt` se serializa en ISO-8601 UTC. Toda función recibe un reloj
+  inyectable; nunca lee directamente la hora del sistema durante los tests.
+
+## D-028 — Dificultad y límite temporal
+
+- Cada ejercicio declara `difficulty` entero de 1 a 5.
+- `timeLimitMs` es `60000` por defecto; `null` significa sin límite.
+- El tiempo transcurrido se registra, pero no cambia la legalidad. Un timeout
+  produce calidad 2 y no puede marcar el intento como correcto.
+
+## D-029 — Persistencia local de ejercicios
+
+- Los ejercicios y sus intentos usan un repositorio separado de partidas, con
+  clave `chess-mentor.trainer.v1` y envelope versionado propio.
+- Fase 3 mantiene adaptadores `MemoryTrainerRepository` y
+  `LocalStorageTrainerRepository`; no crea tablas, API ni sincronización.
