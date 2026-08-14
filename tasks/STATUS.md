@@ -4,6 +4,7 @@ Este archivo es la única fuente del estado de tarjetas. Solo una tarjeta puede 
 
 Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blocked`, `failed`.
 
+<!-- prettier-ignore -->
 | ID     | Estado           | Depende de | Resultado                                     |
 | ------ | ---------------- | ---------- | --------------------------------------------- |
 | CM-000 | complete         | —          | Auditoría, decisiones, runbook y fixtures     |
@@ -41,7 +42,7 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-303 | complete         | CM-302     | Scheduler SM-2 con reloj inyectable           |
 | CM-304 | complete         | CM-303     | Repositorio local de ejercicios               |
 | CM-305 | complete         | CM-304     | Variante corta opcional del motor             |
-| CM-306 | ready_for_manual | CM-305     | UI y gate de Fase 3                           |
+| CM-306 | complete         | CM-305     | UI y gate de Fase 3                           |
 
 ## Próxima tarjeta
 
