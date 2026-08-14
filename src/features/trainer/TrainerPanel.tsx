@@ -12,7 +12,11 @@ import {
   requestHint,
   type HintLevel,
 } from "@/domain/trainer/hints";
-import { createExercise, type ExerciseV1 } from "@/domain/trainer/model";
+import {
+  createExercise,
+  isLegalTrainerUci,
+  type ExerciseV1,
+} from "@/domain/trainer/model";
 import {
   createInitialSchedule,
   scheduleReview,
@@ -32,6 +36,9 @@ import {
 
 const STANDARD_TRAINER_FEN =
   "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+const PROMOTION_PIECES = ["q", "r", "b", "n"] as const;
+
+type TrainerTab = "library" | "practice";
 
 type TrainerForm = Readonly<{
   title: string;
@@ -55,6 +62,12 @@ type AttemptResult = Readonly<{
   timedOut: boolean;
   legal: boolean;
   nextDueAt: string;
+}>;
+
+type PendingPromotion = Readonly<{
+  from: string;
+  to: string;
+  options: readonly string[];
 }>;
 
 export type TrainerPanelProps = Readonly<{
@@ -118,6 +131,22 @@ function formatResult(result: EngineVariantResult): string {
   return `Variante: ${result.variant.pv.join(" ")}`;
 }
 
+function candidateTrainerMoves(
+  fen: string,
+  from: string,
+  to: string,
+): readonly string[] {
+  const base = `${from}${to}`;
+  const promotionRank = to[1] === "1" || to[1] === "8";
+  const promotions = promotionRank
+    ? PROMOTION_PIECES.map((piece) => `${base}${piece}`).filter((candidate) =>
+        isLegalTrainerUci(fen, candidate),
+      )
+    : [];
+  if (promotions.length > 0) return promotions;
+  return isLegalTrainerUci(fen, base) ? [base] : [];
+}
+
 function parseDifficulty(value: string): 1 | 2 | 3 | 4 | 5 | null {
   const parsed = Number(value);
   return parsed === 1 ||
@@ -152,6 +181,10 @@ export function TrainerPanel({
   const [attemptResult, setAttemptResult] = useState<AttemptResult | null>(
     null,
   );
+  const [activeTab, setActiveTab] = useState<TrainerTab>("library");
+  const [selectedSquare, setSelectedSquare] = useState<string | null>(null);
+  const [pendingPromotion, setPendingPromotion] =
+    useState<PendingPromotion | null>(null);
   const [status, setStatus] = useState("Preparado para crear un ejercicio.");
   const [busy, setBusy] = useState(false);
   const [attemptActive, setAttemptActive] = useState(false);
@@ -194,10 +227,73 @@ export function TrainerPanel({
     setHintsUsed([]);
     setHintMessages([]);
     setAttemptResult(null);
+    setActiveTab("practice");
+    setSelectedSquare(null);
+    setPendingPromotion(null);
     attemptStartedAtRef.current = null;
     setAttemptActive(false);
     setStatus("Ejercicio abierto. Pulsa Iniciar intento cuando estés listo.");
   }, []);
+
+  const chooseBoardMove = useCallback(
+    (from: string, to: string): boolean => {
+      if (selected === null || !attemptActive) return false;
+      const candidates = candidateTrainerMoves(selected.exercise.fen, from, to);
+      setSelectedSquare(null);
+      if (candidates.length === 0) {
+        setStatus("La jugada seleccionada no es legal para este ejercicio.");
+        return false;
+      }
+      if (candidates.length > 1) {
+        setPendingPromotion({ from, to, options: candidates });
+        setStatus("Elige la pieza de promoción para completar la jugada.");
+        return false;
+      }
+      const selectedMove = candidates[0] ?? "";
+      setMove(selectedMove);
+      setStatus(`Jugada seleccionada: ${selectedMove}. Pulsa Evaluar jugada.`);
+      return false;
+    },
+    [attemptActive, selected],
+  );
+
+  const handleBoardDrop = useCallback(
+    ({
+      sourceSquare,
+      targetSquare,
+    }: {
+      sourceSquare: string;
+      targetSquare: string | null;
+    }) => {
+      if (targetSquare === null) return false;
+      return chooseBoardMove(sourceSquare, targetSquare);
+    },
+    [chooseBoardMove],
+  );
+
+  const handleBoardSquareClick = useCallback(
+    ({ square }: { square: string }) => {
+      if (!attemptActive) return;
+      if (selectedSquare === null) {
+        setSelectedSquare(square);
+        setStatus(`Origen seleccionado: ${square}. Elige el destino.`);
+        return;
+      }
+      chooseBoardMove(selectedSquare, square);
+    },
+    [attemptActive, chooseBoardMove, selectedSquare],
+  );
+
+  const selectPromotion = useCallback(
+    (promotion: string) => {
+      if (pendingPromotion === null) return;
+      const selectedMove = `${pendingPromotion.from}${pendingPromotion.to}${promotion}`;
+      setMove(selectedMove);
+      setPendingPromotion(null);
+      setStatus(`Jugada seleccionada: ${selectedMove}. Pulsa Evaluar jugada.`);
+    },
+    [pendingPromotion],
+  );
 
   const createNewExercise = useCallback(async () => {
     const difficulty = parseDifficulty(form.difficulty);
@@ -264,6 +360,8 @@ export function TrainerPanel({
     setAttemptActive(true);
     setAttemptResult(null);
     setMove("");
+    setSelectedSquare(null);
+    setPendingPromotion(null);
     setHintsUsed([]);
     setHintMessages([]);
     setStatus("Intento activo. Responde con una jugada UCI.");
@@ -323,6 +421,8 @@ export function TrainerPanel({
       });
       attemptStartedAtRef.current = null;
       setAttemptActive(false);
+      setSelectedSquare(null);
+      setPendingPromotion(null);
       setStatus("Intento guardado localmente.");
     } catch (error) {
       setStatus(repositoryError(error));
@@ -381,224 +481,290 @@ export function TrainerPanel({
         </span>
       </header>
 
-      <div className="trainer-create">
-        <h3>Crear ejercicio</h3>
-        <label>
-          Título
-          <input
-            aria-label="Título del ejercicio"
-            value={form.title}
-            onChange={(event) => updateForm("title", event.target.value)}
-          />
-        </label>
-        <label>
-          FEN del ejercicio
-          <input
-            aria-label="FEN del ejercicio"
-            value={form.fen}
-            onChange={(event) => updateForm("fen", event.target.value)}
-          />
-        </label>
-        <label>
-          Jugadas aceptadas (UCI, separadas por coma)
-          <input
-            aria-label="Jugadas aceptadas"
-            autoComplete="off"
-            type="password"
-            value={form.acceptedMoves}
-            onChange={(event) =>
-              updateForm("acceptedMoves", event.target.value)
-            }
-          />
-        </label>
-        <div className="trainer-form-grid">
-          <label>
-            Concepto
-            <input
-              aria-label="Pista de concepto"
-              value={form.concept}
-              onChange={(event) => updateForm("concept", event.target.value)}
-            />
-          </label>
-          <label>
-            Destino
-            <input
-              aria-label="Pista de destino"
-              value={form.destination}
-              onChange={(event) =>
-                updateForm("destination", event.target.value)
-              }
-            />
-          </label>
-          <label>
-            Dificultad (1–5)
-            <input
-              aria-label="Dificultad"
-              inputMode="numeric"
-              value={form.difficulty}
-              onChange={(event) => updateForm("difficulty", event.target.value)}
-            />
-          </label>
-          <label>
-            Tiempo límite (ms; vacío = sin límite)
-            <input
-              aria-label="Tiempo límite"
-              inputMode="numeric"
-              value={form.timeLimitMs}
-              onChange={(event) =>
-                updateForm("timeLimitMs", event.target.value)
-              }
-            />
-          </label>
-        </div>
+      <nav className="trainer-tabs" aria-label="Secciones del entrenador">
         <button
           type="button"
-          onClick={() => void createNewExercise()}
-          disabled={busy}
+          role="tab"
+          aria-selected={activeTab === "library"}
+          onClick={() => setActiveTab("library")}
         >
-          Crear ejercicio
+          Ejercicios
         </button>
-      </div>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === "practice"}
+          onClick={() => setActiveTab("practice")}
+        >
+          Resolver ejercicio
+        </button>
+      </nav>
 
-      <div className="trainer-library">
-        <h3>Ejercicios guardados</h3>
-        {records.length === 0 ? (
-          <p className="trainer-empty">Todavía no hay ejercicios guardados.</p>
-        ) : (
-          <ul>
-            {records.map((record) => (
-              <li key={record.exercise.id}>
-                <span>
-                  <strong>{record.exercise.title}</strong> · dificultad{" "}
-                  {record.exercise.difficulty}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => selectRecord(record)}
-                  aria-pressed={record.exercise.id === selectedId}
-                >
-                  Abrir
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-
-      <div className="trainer-practice">
-        <h3>Intento</h3>
-        {selected === null ? (
-          <p className="trainer-empty">Crea un ejercicio para comenzar.</p>
-        ) : (
-          <>
-            <p className="trainer-exercise-title">{selected.exercise.title}</p>
-            <div
-              className="trainer-board-frame"
-              aria-label="Tablero temporal del ejercicio"
-            >
-              <Chessboard
-                options={{
-                  position: selected.exercise.fen,
-                  allowDragging: false,
-                }}
+      {activeTab === "library" ? (
+        <div className="trainer-library-tab" role="tabpanel">
+          <div className="trainer-create">
+            <h3>Crear ejercicio</h3>
+            <label>
+              Título
+              <input
+                aria-label="Título del ejercicio"
+                value={form.title}
+                onChange={(event) => updateForm("title", event.target.value)}
               />
-            </div>
-            <p className="trainer-fen">FEN: {selected.exercise.fen}</p>
-            <div className="trainer-actions">
-              <button type="button" onClick={beginAttempt} disabled={busy}>
-                Iniciar intento
-              </button>
-              <button
-                type="button"
-                onClick={() => void generateVariant()}
-                disabled={busy || engineAdapter === undefined}
-              >
-                Variante corta del motor
-              </button>
-            </div>
-            <p className="trainer-engine-note">
-              {engineAdapter === undefined
-                ? "Stockfish opcional no disponible: puedes responder manualmente."
-                : "La variante del motor es opcional y no modifica la partida."}
-            </p>
-            <div className="trainer-hints">
-              <h4>Pistas</h4>
-              <div className="trainer-hint-actions">
-                {HINT_LEVELS.map((level) => (
-                  <button
-                    type="button"
-                    key={level}
-                    onClick={() => askHint(level)}
-                    disabled={busy || level !== nextHint}
-                  >
-                    Pista: {level}
-                  </button>
-                ))}
-              </div>
-              {hintMessages.length === 0 ? null : (
-                <ol>
-                  {hintMessages.map((hint) => (
-                    <li key={hint.level}>{hint.text}</li>
-                  ))}
-                </ol>
-              )}
-              <p>Penalización acumulada: {hintsUsed.length}</p>
-            </div>
-            <form
-              className="trainer-attempt-form"
-              onSubmit={(event) => {
-                event.preventDefault();
-                void submitAttempt();
-              }}
-            >
+            </label>
+            <label>
+              FEN del ejercicio
+              <input
+                aria-label="FEN del ejercicio"
+                value={form.fen}
+                onChange={(event) => updateForm("fen", event.target.value)}
+              />
+            </label>
+            <label>
+              Jugadas aceptadas (UCI, separadas por coma)
+              <input
+                aria-label="Jugadas aceptadas"
+                autoComplete="off"
+                type="password"
+                value={form.acceptedMoves}
+                onChange={(event) =>
+                  updateForm("acceptedMoves", event.target.value)
+                }
+              />
+            </label>
+            <div className="trainer-form-grid">
               <label>
-                Jugada UCI
+                Concepto
                 <input
-                  aria-label="Jugada UCI"
-                  value={move}
-                  onChange={(event) => setMove(event.target.value)}
-                  placeholder="e2e4"
+                  aria-label="Pista de concepto"
+                  value={form.concept}
+                  onChange={(event) =>
+                    updateForm("concept", event.target.value)
+                  }
                 />
               </label>
-              <button type="submit" disabled={busy || !attemptActive}>
-                Evaluar jugada
-              </button>
-            </form>
-            {!attemptActive && attemptResult === null ? (
-              <p className="trainer-empty">
-                Inicia el intento para habilitar la respuesta.
-              </p>
-            ) : null}
-            {attemptResult === null ? null : (
-              <div className="trainer-result" role="status">
-                <strong>
-                  {attemptResult.correct
-                    ? "Respuesta correcta"
-                    : "Respuesta no válida"}
-                </strong>
-                <span>
-                  Puntuación: {attemptResult.score}/5 · calidad{" "}
-                  {attemptResult.quality}
-                </span>
-                <span>
-                  Legal: {attemptResult.legal ? "sí" : "no"} · timeout:{" "}
-                  {attemptResult.timedOut ? "sí" : "no"}
-                </span>
-                <span>
-                  Próxima repetición: {formatDueDate(attemptResult.nextDueAt)}
-                </span>
-              </div>
-            )}
-          </>
-        )}
-      </div>
+              <label>
+                Destino
+                <input
+                  aria-label="Pista de destino"
+                  value={form.destination}
+                  onChange={(event) =>
+                    updateForm("destination", event.target.value)
+                  }
+                />
+              </label>
+              <label>
+                Dificultad (1–5)
+                <input
+                  aria-label="Dificultad"
+                  inputMode="numeric"
+                  value={form.difficulty}
+                  onChange={(event) =>
+                    updateForm("difficulty", event.target.value)
+                  }
+                />
+              </label>
+              <label>
+                Tiempo límite (ms; vacío = sin límite)
+                <input
+                  aria-label="Tiempo límite"
+                  inputMode="numeric"
+                  value={form.timeLimitMs}
+                  onChange={(event) =>
+                    updateForm("timeLimitMs", event.target.value)
+                  }
+                />
+              </label>
+            </div>
+            <button
+              type="button"
+              onClick={() => void createNewExercise()}
+              disabled={busy}
+            >
+              Crear ejercicio
+            </button>
+          </div>
 
-      {selected === null ? null : (
-        <p className="trainer-schedule">
-          Repeticiones: {selected.schedule.repetitions} · próxima:{" "}
-          {formatDueDate(selected.schedule.nextDueAt)} · intentos:{" "}
-          {selected.attempts.length}
-        </p>
+          <div className="trainer-library">
+            <h3>Ejercicios guardados</h3>
+            {records.length === 0 ? (
+              <p className="trainer-empty">
+                Todavía no hay ejercicios guardados.
+              </p>
+            ) : (
+              <ul>
+                {records.map((record) => (
+                  <li key={record.exercise.id}>
+                    <span>
+                      <strong>{record.exercise.title}</strong> · dificultad{" "}
+                      {record.exercise.difficulty}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => selectRecord(record)}
+                      aria-pressed={record.exercise.id === selectedId}
+                    >
+                      Abrir
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+      ) : (
+        <div className="trainer-practice-tab" role="tabpanel">
+          <div className="trainer-practice">
+            <h3>Intento</h3>
+            {selected === null ? (
+              <p className="trainer-empty">Crea un ejercicio para comenzar.</p>
+            ) : (
+              <>
+                <p className="trainer-exercise-title">
+                  {selected.exercise.title}
+                </p>
+                <div
+                  className="trainer-board-frame"
+                  aria-label="Tablero temporal del ejercicio"
+                >
+                  <Chessboard
+                    options={{
+                      position: selected.exercise.fen,
+                      allowDragging: attemptActive && !busy,
+                      onPieceDrop: handleBoardDrop,
+                      onSquareClick: handleBoardSquareClick,
+                    }}
+                  />
+                </div>
+                <p className="trainer-fen">FEN: {selected.exercise.fen}</p>
+                <div className="trainer-actions">
+                  <button type="button" onClick={beginAttempt} disabled={busy}>
+                    Iniciar intento
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => void generateVariant()}
+                    disabled={busy || engineAdapter === undefined}
+                  >
+                    Variante corta del motor
+                  </button>
+                </div>
+                <p className="trainer-engine-note">
+                  {engineAdapter === undefined
+                    ? "Stockfish opcional no disponible: puedes responder manualmente."
+                    : "La variante del motor es opcional y no modifica la partida."}
+                </p>
+                <p className="trainer-board-help">
+                  Puedes escribir la jugada UCI o seleccionar origen y destino
+                  en el tablero. La jugada se evalúa al pulsar el botón.
+                </p>
+                <div className="trainer-hints">
+                  <h4>Pistas</h4>
+                  <div className="trainer-hint-actions">
+                    {HINT_LEVELS.map((level) => (
+                      <button
+                        type="button"
+                        key={level}
+                        onClick={() => askHint(level)}
+                        disabled={busy || level !== nextHint}
+                      >
+                        Pista: {level}
+                      </button>
+                    ))}
+                  </div>
+                  {hintMessages.length === 0 ? null : (
+                    <ol>
+                      {hintMessages.map((hint) => (
+                        <li key={hint.level}>{hint.text}</li>
+                      ))}
+                    </ol>
+                  )}
+                  <p>Penalización acumulada: {hintsUsed.length}</p>
+                </div>
+                <form
+                  className="trainer-attempt-form"
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                    void submitAttempt();
+                  }}
+                >
+                  <label>
+                    Jugada UCI
+                    <input
+                      aria-label="Jugada UCI"
+                      value={move}
+                      onChange={(event) => setMove(event.target.value)}
+                      placeholder="e2e4"
+                    />
+                  </label>
+                  <button type="submit" disabled={busy || !attemptActive}>
+                    Evaluar jugada
+                  </button>
+                </form>
+                {!attemptActive && attemptResult === null ? (
+                  <p className="trainer-empty">
+                    Inicia el intento para habilitar la respuesta.
+                  </p>
+                ) : null}
+                {attemptResult === null ? null : (
+                  <div className="trainer-result" role="status">
+                    <strong>
+                      {attemptResult.correct
+                        ? "Respuesta correcta"
+                        : "Respuesta no válida"}
+                    </strong>
+                    <span>
+                      Puntuación: {attemptResult.score}/5 · calidad{" "}
+                      {attemptResult.quality}
+                    </span>
+                    <span>
+                      Legal: {attemptResult.legal ? "sí" : "no"} · timeout:{" "}
+                      {attemptResult.timedOut ? "sí" : "no"}
+                    </span>
+                    <span>
+                      Próxima repetición:{" "}
+                      {formatDueDate(attemptResult.nextDueAt)}
+                    </span>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+
+          {selected === null ? null : (
+            <p className="trainer-schedule">
+              Repeticiones: {selected.schedule.repetitions} · próxima:{" "}
+              {formatDueDate(selected.schedule.nextDueAt)} · intentos:{" "}
+              {selected.attempts.length}
+            </p>
+          )}
+          {pendingPromotion === null ? null : (
+            <div className="promotion-backdrop" role="presentation">
+              <section
+                className="promotion-dialog"
+                role="dialog"
+                aria-modal="true"
+                aria-label="Elegir promoción del ejercicio"
+              >
+                <h3>Elige promoción</h3>
+                <div className="promotion-options">
+                  {pendingPromotion.options.map((option) => (
+                    <button
+                      type="button"
+                      key={option}
+                      onClick={() => selectPromotion(option.slice(-1))}
+                    >
+                      {option.slice(-1).toUpperCase()}
+                    </button>
+                  ))}
+                </div>
+                <button type="button" onClick={() => setPendingPromotion(null)}>
+                  Cancelar
+                </button>
+              </section>
+            </div>
+          )}
+        </div>
       )}
     </section>
   );

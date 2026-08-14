@@ -6,7 +6,31 @@ import { MemoryTrainerRepository } from "@/infrastructure/trainer/MemoryTrainerR
 import { TrainerPanel } from "./TrainerPanel";
 
 vi.mock("react-chessboard", () => ({
-  Chessboard: () => <div data-testid="trainer-board">tablero temporal</div>,
+  Chessboard: ({
+    options,
+  }: {
+    options: {
+      onPieceDrop?: (input: {
+        sourceSquare: string;
+        targetSquare: string | null;
+      }) => boolean;
+    };
+  }) => (
+    <div data-testid="trainer-board">
+      tablero temporal
+      <button
+        type="button"
+        onClick={() =>
+          options.onPieceDrop?.({
+            sourceSquare: "e2",
+            targetSquare: "e4",
+          })
+        }
+      >
+        mover e2-e4
+      </button>
+    </div>
+  ),
 }));
 
 function renderPanel() {
@@ -84,5 +108,21 @@ describe("TrainerPanel", () => {
       expect(saved[0]?.attempts).toHaveLength(1);
       expect(saved[0]?.attempts[0]?.quality).toBe(5);
     });
+  });
+
+  it("permite cambiar de pestaña y seleccionar una jugada desde el tablero", async () => {
+    renderPanel();
+    await createExercise();
+
+    fireEvent.click(screen.getByRole("tab", { name: "Ejercicios" }));
+    expect(
+      screen.getByRole("heading", { name: "Crear ejercicio" }),
+    ).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("tab", { name: "Resolver ejercicio" }));
+    fireEvent.click(screen.getByRole("button", { name: "Iniciar intento" }));
+    fireEvent.click(screen.getByRole("button", { name: "mover e2-e4" }));
+    await waitFor(() =>
+      expect(screen.getByLabelText("Jugada UCI")).toHaveValue("e2e4"),
+    );
   });
 });

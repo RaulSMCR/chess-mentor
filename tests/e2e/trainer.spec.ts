@@ -4,6 +4,7 @@ test("entrenador: crear, pedir pistas y evaluar sin Stockfish", async ({
   page,
 }) => {
   await page.goto("/");
+  await page.getByRole("tab", { name: "Entrenador" }).click();
   const trainer = page.getByRole("region", {
     name: "Entrenador de ejercicios",
   });
