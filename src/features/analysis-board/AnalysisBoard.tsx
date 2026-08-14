@@ -15,6 +15,7 @@ import { GameImportExport } from "./GameImportExport";
 import { SavedGames } from "./SavedGames";
 import { useGameSession } from "./useGameSession";
 import { useState } from "react";
+import { AnalysisPanel } from "./AnalysisPanel";
 
 type AnalysisBoardProps = Readonly<{
   repository?: GameRepository;
@@ -50,6 +51,7 @@ export function AnalysisBoard({ repository }: AnalysisBoardProps) {
         getPromotionOptions={controller.promotionOptions}
         onError={controller.reportError}
       />
+      <AnalysisPanel fen={node?.fen ?? null} cursorNodeId={node?.id ?? null} />
       <section className="position-card" aria-label="Posición actual">
         <h2>Posición actual</h2>
         <p data-testid="current-fen">{node?.fen ?? "—"}</p>

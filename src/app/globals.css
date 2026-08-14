@@ -154,6 +154,149 @@ button:disabled {
   gap: 0.75rem;
 }
 
+.analysis-panel {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--brand-200);
+  border-radius: 1rem;
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  padding: 1rem;
+}
+
+.analysis-panel-header,
+.analysis-line > header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.analysis-panel-header h2,
+.analysis-panel-header p,
+.analysis-line h3,
+.analysis-line p,
+.analysis-preview h3,
+.analysis-preview p {
+  margin: 0;
+}
+
+.analysis-panel-header h2 {
+  color: var(--brand-800);
+}
+
+.analysis-panel-header [role="status"] {
+  color: var(--neutral-600);
+  font-size: 0.875rem;
+}
+
+.analysis-metadata {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin: 0;
+  padding: 0;
+  color: var(--neutral-600);
+  font-size: 0.875rem;
+  list-style: none;
+}
+
+.analysis-lines {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.analysis-line,
+.analysis-preview {
+  display: grid;
+  gap: 0.5rem;
+  min-width: 0;
+  border: 1px solid var(--neutral-200);
+  border-radius: 0.75rem;
+  background: var(--surface-soft);
+  padding: 0.75rem;
+}
+
+.analysis-line.is-selected {
+  border-color: var(--brand-500);
+  box-shadow: 0 0 0 2px var(--brand-50);
+}
+
+.analysis-score {
+  border-radius: 999px;
+  padding: 0.25rem 0.5rem;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.analysis-score-cp {
+  background: var(--brand-50);
+  color: var(--brand-800);
+}
+
+.analysis-score-mate {
+  background: var(--accent-50);
+  color: var(--accent-950);
+}
+
+.analysis-line-meta,
+.analysis-preview > p:first-of-type {
+  color: var(--neutral-600);
+  font-size: 0.875rem;
+}
+
+.analysis-pv {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.analysis-pv button {
+  min-height: 36px;
+  padding: 0.35rem 0.5rem;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.8rem;
+}
+
+.analysis-preview {
+  border-color: var(--brand-200);
+  background: var(--brand-50);
+}
+
+.analysis-preview-moves {
+  overflow-wrap: anywhere;
+  color: var(--brand-950);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
+.analysis-preview-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.analysis-empty {
+  margin: 0;
+  color: var(--neutral-600);
+}
+
+.analysis-unavailable {
+  border: 1px solid var(--accent-300);
+  border-radius: 0.75rem;
+  background: var(--accent-50);
+  color: var(--accent-950);
+  padding: 0.75rem;
+}
+
+.analysis-unavailable p {
+  margin: 0.35rem 0 0;
+}
+
 .move-tree,
 .annotation-editor {
   display: grid;
@@ -447,6 +590,7 @@ button:disabled {
   }
 
   .analysis-header,
+  .analysis-panel,
   .position-card,
   .game-toolbar,
   .import-export,

@@ -33,12 +33,12 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-120 | complete | CM-119     | Worker UCI del navegador                      |
 | CM-121 | complete | CM-120     | Parser de score, MultiPV y perspectiva        |
 | CM-122 | complete | CM-121     | Cancelación y descarte de análisis obsoleto   |
-| CM-123 | pending  | CM-122     | UI de análisis y navegación de PV             |
+| CM-123 | complete | CM-122     | UI de análisis y navegación de PV             |
 | CM-124 | pending  | CM-123     | Comparación de jugada y gate Stockfish        |
 
 ## Próxima tarjeta
 
-`CM-123` en `tasks/PHASE-2.md`.
+`CM-124` en `tasks/PHASE-2.md`.
 
 ## Regla de avance
 
