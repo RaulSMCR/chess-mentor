@@ -16,6 +16,7 @@ import { SavedGames } from "./SavedGames";
 import { useGameSession } from "./useGameSession";
 import { useState } from "react";
 import { AnalysisPanel } from "./AnalysisPanel";
+import { TrainerPanel } from "@/features/trainer/TrainerPanel";
 
 type AnalysisBoardProps = Readonly<{
   repository?: GameRepository;
@@ -52,6 +53,7 @@ export function AnalysisBoard({ repository }: AnalysisBoardProps) {
         onError={controller.reportError}
       />
       <AnalysisPanel fen={node?.fen ?? null} cursorNodeId={node?.id ?? null} />
+      <TrainerPanel />
       <section className="position-card" aria-label="Posición actual">
         <h2>Posición actual</h2>
         <p data-testid="current-fen">{node?.fen ?? "—"}</p>
