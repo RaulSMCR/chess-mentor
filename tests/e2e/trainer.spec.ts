@@ -27,7 +27,30 @@ test("entrenador: crear, pedir pistas y evaluar sin Stockfish", async ({
     trainer.getByRole("button", { name: "Pista: engine" }),
   ).toBeDisabled();
 
-  await trainer.getByLabel("Jugada UCI").fill("e2e4");
+  const exerciseBoard = trainer.locator(".trainer-board-frame");
+  const sourceSquare = exerciseBoard.locator('[data-square="e2"]');
+  const targetSquare = exerciseBoard.locator('[data-square="e4"]');
+  const sourceBox = await sourceSquare.boundingBox();
+  const targetBox = await targetSquare.boundingBox();
+  expect(sourceBox).not.toBeNull();
+  expect(targetBox).not.toBeNull();
+  if (sourceBox === null || targetBox === null) {
+    throw new Error(
+      "No se encontraron las casillas del tablero del ejercicio.",
+    );
+  }
+  await page.mouse.move(
+    sourceBox.x + sourceBox.width / 2,
+    sourceBox.y + sourceBox.height / 2,
+  );
+  await page.mouse.down();
+  await page.mouse.move(
+    targetBox.x + targetBox.width / 2,
+    targetBox.y + targetBox.height / 2,
+    { steps: 8 },
+  );
+  await page.mouse.up();
+  await expect(trainer.getByLabel("Jugada UCI")).toHaveValue("e2e4");
   await trainer.getByRole("button", { name: "Evaluar jugada" }).click();
   await expect(trainer.getByText(/Puntuación: 4\/5 · calidad 4/)).toBeVisible();
   await expect(

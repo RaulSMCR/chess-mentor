@@ -10,13 +10,14 @@ vi.mock("react-chessboard", () => ({
     options,
   }: {
     options: {
+      position?: string;
       onPieceDrop?: (input: {
         sourceSquare: string;
         targetSquare: string | null;
       }) => boolean;
     };
   }) => (
-    <div data-testid="trainer-board">
+    <div data-testid="trainer-board" data-position={options.position}>
       tablero temporal
       <button
         type="button"
@@ -123,6 +124,10 @@ describe("TrainerPanel", () => {
     fireEvent.click(screen.getByRole("button", { name: "mover e2-e4" }));
     await waitFor(() =>
       expect(screen.getByLabelText("Jugada UCI")).toHaveValue("e2e4"),
+    );
+    expect(screen.getByTestId("trainer-board")).toHaveAttribute(
+      "data-position",
+      expect.stringContaining("4P3"),
     );
   });
 });

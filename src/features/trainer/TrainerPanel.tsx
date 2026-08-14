@@ -147,6 +147,89 @@ function candidateTrainerMoves(
   return isLegalTrainerUci(fen, base) ? [base] : [];
 }
 
+function squareCoordinates(square: string): { file: number; rank: number } {
+  return {
+    file: square.charCodeAt(0) - "a".charCodeAt(0),
+    rank: 8 - Number(square[1]),
+  };
+}
+
+function expandFenRank(rank: string): string[] {
+  const pieces: string[] = [];
+  for (const token of rank) {
+    if (/^[1-8]$/.test(token)) {
+      pieces.push(...Array.from({ length: Number(token) }, () => ""));
+    } else {
+      pieces.push(token);
+    }
+  }
+  return pieces.length === 8 ? pieces : [];
+}
+
+function compressFenRank(rank: readonly string[]): string {
+  let result = "";
+  let empty = 0;
+  for (const piece of rank) {
+    if (piece === "") {
+      empty += 1;
+      continue;
+    }
+    if (empty > 0) {
+      result += String(empty);
+      empty = 0;
+    }
+    result += piece;
+  }
+  return empty > 0 ? `${result}${empty}` : result;
+}
+
+/**
+ * Updates only the board-placement field for immediate drag feedback. The
+ * submitted UCI remains the domain source of truth and is validated later.
+ */
+function previewTrainerFen(
+  fen: string,
+  from: string,
+  to: string,
+  promotion?: string,
+): string {
+  const fields = fen.trim().split(/\s+/);
+  const fromCoordinates = squareCoordinates(from);
+  const toCoordinates = squareCoordinates(to);
+  if (
+    fields.length < 2 ||
+    !Number.isInteger(fromCoordinates.file) ||
+    !Number.isInteger(fromCoordinates.rank) ||
+    !Number.isInteger(toCoordinates.file) ||
+    !Number.isInteger(toCoordinates.rank) ||
+    fromCoordinates.file < 0 ||
+    fromCoordinates.file > 7 ||
+    fromCoordinates.rank < 0 ||
+    fromCoordinates.rank > 7 ||
+    toCoordinates.file < 0 ||
+    toCoordinates.file > 7 ||
+    toCoordinates.rank < 0 ||
+    toCoordinates.rank > 7
+  ) {
+    return fen;
+  }
+  const ranks = fields[0]?.split("/").map(expandFenRank) ?? [];
+  const fromRank = ranks[fromCoordinates.rank];
+  const toRank = ranks[toCoordinates.rank];
+  if (fromRank === undefined || toRank === undefined) return fen;
+  const piece = fromRank[fromCoordinates.file];
+  if (piece === undefined || piece === "") return fen;
+  fromRank[fromCoordinates.file] = "";
+  toRank[toCoordinates.file] =
+    promotion === undefined
+      ? piece
+      : piece === piece.toUpperCase()
+        ? promotion.toUpperCase()
+        : promotion;
+  fields[0] = ranks.map(compressFenRank).join("/");
+  return fields.join(" ");
+}
+
 function parseDifficulty(value: string): 1 | 2 | 3 | 4 | 5 | null {
   const parsed = Number(value);
   return parsed === 1 ||
@@ -183,6 +266,7 @@ export function TrainerPanel({
   );
   const [activeTab, setActiveTab] = useState<TrainerTab>("library");
   const [selectedSquare, setSelectedSquare] = useState<string | null>(null);
+  const [boardFen, setBoardFen] = useState<string | null>(null);
   const [pendingPromotion, setPendingPromotion] =
     useState<PendingPromotion | null>(null);
   const [status, setStatus] = useState("Preparado para crear un ejercicio.");
@@ -229,6 +313,7 @@ export function TrainerPanel({
     setAttemptResult(null);
     setActiveTab("practice");
     setSelectedSquare(null);
+    setBoardFen(record.exercise.fen);
     setPendingPromotion(null);
     attemptStartedAtRef.current = null;
     setAttemptActive(false);
@@ -247,12 +332,13 @@ export function TrainerPanel({
       if (candidates.length > 1) {
         setPendingPromotion({ from, to, options: candidates });
         setStatus("Elige la pieza de promoción para completar la jugada.");
-        return false;
+        return true;
       }
       const selectedMove = candidates[0] ?? "";
       setMove(selectedMove);
+      setBoardFen(previewTrainerFen(selected.exercise.fen, from, to));
       setStatus(`Jugada seleccionada: ${selectedMove}. Pulsa Evaluar jugada.`);
-      return false;
+      return true;
     },
     [attemptActive, selected],
   );
@@ -289,10 +375,20 @@ export function TrainerPanel({
       if (pendingPromotion === null) return;
       const selectedMove = `${pendingPromotion.from}${pendingPromotion.to}${promotion}`;
       setMove(selectedMove);
+      if (selected !== null) {
+        setBoardFen(
+          previewTrainerFen(
+            selected.exercise.fen,
+            pendingPromotion.from,
+            pendingPromotion.to,
+            promotion,
+          ),
+        );
+      }
       setPendingPromotion(null);
       setStatus(`Jugada seleccionada: ${selectedMove}. Pulsa Evaluar jugada.`);
     },
-    [pendingPromotion],
+    [pendingPromotion, selected],
   );
 
   const createNewExercise = useCallback(async () => {
@@ -360,6 +456,7 @@ export function TrainerPanel({
     setAttemptActive(true);
     setAttemptResult(null);
     setMove("");
+    setBoardFen(selected.exercise.fen);
     setSelectedSquare(null);
     setPendingPromotion(null);
     setHintsUsed([]);
@@ -629,7 +726,7 @@ export function TrainerPanel({
                 >
                   <Chessboard
                     options={{
-                      position: selected.exercise.fen,
+                      position: boardFen ?? selected.exercise.fen,
                       allowDragging: attemptActive && !busy,
                       onPieceDrop: handleBoardDrop,
                       onSquareClick: handleBoardSquareClick,
