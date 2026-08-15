@@ -353,6 +353,122 @@ no eliminar la migración, el volumen ni el contenedor de CM-350.
 
 Usar `docs/HANDOFF.md`.
 
+---
+
+# CM-354 — Runner server-only de jobs
+
+Estado inicial: `pending`
+
+## Objetivo
+
+Implementar el runner reanudable que reclama un job, selecciona un handler por
+`kind`, permite guardar checkpoints y finaliza con `succeeded` o `failed` sin
+duplicar resultados ni aceptar excepciones de un worker obsoleto.
+
+## Resultado observable
+
+Una invocación de `runOnce()` procesa como máximo un job. Si no hay trabajo
+elegible devuelve `idle`; si el handler termina, persiste el resultado; si
+falla, persiste un error JSON tipado. Los checkpoints se escriben con el
+`attemptCount` reclamado y un conflicto del repositorio no se transforma en un
+éxito falso.
+
+## Prerrequisitos
+
+- `CM-353` en `complete`.
+- El runner se invoca solo desde runtime server-only; no se importa desde
+  componentes ni módulos de navegador.
+
+## Decisiones congeladas
+
+- D-010: el runner depende del contrato `JobRepository`, no de Prisma directo.
+- D-014: ningún navegador contacta PostgreSQL ni ejecuta el runner.
+- D-021: no se añade sincronización cloud en esta tarjeta.
+
+## Contrato congelado
+
+- `JobRunner` recibe un `JobRepository`, un mapa inmutable de handlers y
+  opciones `clock`, `leaseDurationMs` y `maxAttempts`.
+- Cada handler recibe el snapshot reclamado y
+  `{ checkpoint(value) }`; devuelve un `JobJsonValue`.
+- `runOnce()` calcula `leaseUntil` a partir del reloj inyectado, reclama un
+  único job y devuelve `{status: "idle"}` o `{status: "succeeded"|"failed", job,
+checkpoints}`.
+- Un `JobRepositoryError` se propaga sin marcar el job como fallido. Una
+  excepción ordinaria del handler se convierte en
+  `{code: "HANDLER_FAILED", message}` y llama a `fail` con el intento activo.
+- Un `kind` sin handler se marca como fallo con
+  `{code: "HANDLER_NOT_FOUND", kind}`.
+- `leaseDurationMs` y `maxAttempts` son enteros positivos; el reloj siempre
+  produce fechas válidas y el lease queda estrictamente después de `now`.
+
+## Archivos permitidos
+
+- `src/infrastructure/jobs/JobRunner.ts`.
+- `src/infrastructure/jobs/JobRunner.test.ts`.
+- `tasks/PHASE-3.5.md`.
+- `tasks/STATUS.md`.
+
+## Archivos prohibidos
+
+- `src/domain/**`, `PrismaJobRepository.ts` y el esquema Prisma.
+- Componentes React, Route Handlers, worker del navegador, Supabase y `.env`.
+
+## Fuera de alcance
+
+- Polling permanente, cron, procesos Windows o despliegue cloud.
+- Renovación de lease durante un handler.
+- Backups y restauración de PostgreSQL (tarjeta posterior).
+
+## Pasos exactos
+
+1. Crear el runner puro de infraestructura sobre `JobRepository`, sin importar
+   Prisma directamente.
+2. Normalizar errores de handlers y contar checkpoints confirmados.
+3. Probar éxito, fallo, handler ausente, idle, validación de opciones y
+   propagación de conflictos/errores de almacenamiento.
+
+## Verificación focal
+
+```powershell
+pnpm.cmd exec vitest run src/infrastructure/jobs/JobRunner.test.ts
+```
+
+Resultado esperado:
+
+- Todos los escenarios pasan y nunca se escribe un resultado para un intento
+  obsoleto.
+
+## Verificación global
+
+```powershell
+pnpm.cmd run verify
+git diff --check
+```
+
+## Prueba manual
+
+- `NOT RUN`: no requiere dispositivo; el smoke de PostgreSQL pertenece a
+  CM-353 y debe permanecer verde.
+
+## Commit local de cierre
+
+- Mensaje: `CM-354: add server-only job runner`.
+- Stage permitido: `src/infrastructure/jobs/JobRunner.ts src/infrastructure/jobs/JobRunner.test.ts tasks/PHASE-3.5.md tasks/STATUS.md`.
+- Push: prohibido salvo petición separada del usuario.
+
+## Condiciones de parada
+
+- El runner necesita cambiar la interfaz de `JobRepository`.
+- Un error del handler puede dejar un job `running` sin que el caller lo
+  observe como error.
+- El runner importa módulos de navegador o Prisma directamente.
+
+## Rollback
+
+Revertir únicamente el commit de esta tarjeta y sus dos archivos de runner;
+no eliminar migraciones, volúmenes ni el contenedor de CM-350.
+
 ## Handoff
 
 Usar `docs/HANDOFF.md`.

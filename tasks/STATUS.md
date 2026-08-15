@@ -47,10 +47,11 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-351 | complete         | CM-350     | Repositorio Prisma de partidas                |
 | CM-352 | complete         | CM-351     | Repositorio Prisma de ejercicios              |
 | CM-353 | complete         | CM-352     | Cola reanudable y repositorio Prisma de jobs  |
+| CM-354 | complete         | CM-353     | Runner server-only de jobs                    |
 
 ## Próxima tarjeta
 
-No hay una tarjeta posterior definida; la siguiente debe cubrir el runner server-only y el backup restaurable de Fase 3.5.
+No hay una tarjeta posterior definida; la siguiente debe cubrir el backup restaurable de Fase 3.5.
 
 ## Regla de avance
 
