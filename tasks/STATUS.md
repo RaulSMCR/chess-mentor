@@ -44,10 +44,11 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-305 | complete         | CM-304     | Variante corta opcional del motor             |
 | CM-306 | complete         | CM-305     | UI y gate de Fase 3                           |
 | CM-350 | complete         | CM-306     | Base PostgreSQL aislada y Prisma              |
+| CM-351 | complete         | CM-350     | Repositorio Prisma de partidas                |
 
 ## Próxima tarjeta
 
-CM-350 está completa. Supabase cloud queda fuera de esta tarjeta y requiere una
+CM-351 está completa. Supabase cloud queda fuera de esta tarjeta y requiere una
 tarjeta posterior específica.
 
 ## Regla de avance
