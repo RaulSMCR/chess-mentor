@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "sourceSha256": "869a33bbf72478bd67a647d7b9165dd9d2b5d9584c94125e82bb9f4cc6682293",
+  "sizeBytes": 150,
+  "textSha256": "869a33bbf72478bd67a647d7b9165dd9d2b5d9584c94125e82bb9f4cc6682293",
+  "chunks": [
+    { "ordinal": 0, "startByte": 0, "endByte": 30 },
+    { "ordinal": 1, "startByte": 32, "endByte": 82 },
+    { "ordinal": 2, "startByte": 83, "endByte": 149 }
+  ]
+}

@@ -49,10 +49,11 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-353 | complete         | CM-352     | Cola reanudable y repositorio Prisma de jobs  |
 | CM-354 | complete         | CM-353     | Runner server-only de jobs                    |
 | CM-355 | complete         | CM-354     | Backup y restauración de prueba PostgreSQL    |
+| CM-400 | complete         | CM-355     | Ingestión TXT y procedencia básica            |
 
 ## Próxima tarjeta
 
-No hay una tarjeta posterior definida; la siguiente debe desglosar Fase 4 (biblioteca textual, empezando por TXT).
+No hay una tarjeta posterior definida; la siguiente debe cubrir Markdown con saneamiento y localizadores derivados.
 
 ## Regla de avance
 

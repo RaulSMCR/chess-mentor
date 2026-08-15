@@ -1,0 +1,4 @@
+# Chess Mentor — fixture TXT
+
+Apertura española: 1. e4 e5 2. Nf3 Nc6 3. Bb5 a6.
+Línea crítica: ♞f6 responde con desarrollo y presión central.
