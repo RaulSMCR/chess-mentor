@@ -125,6 +125,108 @@ Usar `docs/HANDOFF.md`.
 
 ---
 
+# CM-352 — Repositorio Prisma de ejercicios
+
+Estado inicial: `pending`
+
+## Objetivo
+
+Implementar el adaptador PostgreSQL de `TrainerRepository`, conservando la
+validación, el clonado y los códigos de error de los repositorios locales.
+
+## Resultado observable
+
+Un ejercicio válido se puede guardar, listar, leer y eliminar mediante Prisma;
+un payload inválido, una metadata SQL inconsistente o una base no disponible
+produce un error tipado sin aceptar datos corruptos.
+
+## Prerrequisitos
+
+- `CM-351` en `complete`.
+- PostgreSQL local en `127.0.0.1:5433` para el smoke manual.
+
+## Decisiones congeladas
+
+- D-005: `TrainerExerciseRecordV1` sigue siendo el payload canónico.
+- D-010: el adaptador SQL implementa la misma interfaz conceptual.
+- D-014: Prisma solo se usa del lado servidor y PostgreSQL queda en loopback.
+- D-029: ejercicios usan repositorio separado de partidas.
+
+## Archivos permitidos
+
+- `src/infrastructure/trainer/PrismaTrainerRepository.ts`.
+- `src/infrastructure/trainer/PrismaTrainerRepository.test.ts`.
+- `tasks/PHASE-3.5.md`.
+- `tasks/STATUS.md`.
+
+## Archivos prohibidos
+
+- `src/domain/**`.
+- Componentes React, Route Handlers, worker, Supabase y esquema Prisma.
+- `.env`, `.env.local` y datos reales.
+
+## Fuera de alcance
+
+- Repositorios SQL de jobs.
+- Migraciones nuevas y cambios del esquema Prisma.
+- Sincronización cloud y autenticación.
+
+## Reglas de persistencia
+
+1. `save()` valida el registro antes de llamar al store y serializa una copia.
+2. La fila debe conservar `id` y `schedule.nextDueAt` en columnas coincidentes
+   con el payload JSON.
+3. `list()` ordena por `nextDueAt` ascendente y luego `id` ascendente.
+4. Lecturas con payload o metadata inconsistentes producen
+   `STORAGE_CORRUPT`; fallos del store producen `STORAGE_UNAVAILABLE`.
+5. `remove()` de un id inexistente es no-op y todas las lecturas devuelven
+   copias independientes.
+
+## Verificación focal
+
+```powershell
+pnpm.cmd exec vitest run src/infrastructure/trainer/PrismaTrainerRepository.test.ts
+$env:DATABASE_URL = "postgresql://chess_mentor:change_me@127.0.0.1:5433/chess_mentor?schema=public"
+pnpm.cmd exec prisma migrate deploy
+docker compose exec -T postgres pg_isready -U chess_mentor -d chess_mentor
+```
+
+## Verificación global
+
+```powershell
+pnpm.cmd run verify
+git diff --check
+```
+
+## Prueba manual
+
+- `PASS`: smoke contra la base local con migración aplicada y `pg_isready`.
+- Si Docker/Engine no responde, conservar `ready_for_manual` y no inventar PASS.
+- No usar partidas, ejercicios, credenciales ni servicios cloud reales.
+
+## Commit local de cierre
+
+- Mensaje: `CM-352: add Prisma trainer repository`.
+- Stage permitido: `src/infrastructure/trainer/PrismaTrainerRepository.ts src/infrastructure/trainer/PrismaTrainerRepository.test.ts tasks/PHASE-3.5.md tasks/STATUS.md`.
+- Push: prohibido salvo petición separada del usuario.
+
+## Condiciones de parada
+
+- El adaptador requiere cambiar `TrainerRepository` o el esquema Prisma.
+- Una lectura inválida se acepta o una escritura inválida llega a Prisma.
+- El cliente Prisma se importa desde componentes de navegador.
+
+## Rollback
+
+Revertir únicamente los archivos de esta tarjeta si el commit aún no existe.
+No eliminar migraciones, volúmenes ni el contenedor de CM-350.
+
+## Handoff
+
+Usar `docs/HANDOFF.md`.
+
+---
+
 # CM-351 — Repositorio Prisma de partidas
 
 Estado inicial: `pending`
