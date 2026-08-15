@@ -475,6 +475,119 @@ Usar `docs/HANDOFF.md`.
 
 ---
 
+# CM-355 — Backup y restauración de prueba PostgreSQL
+
+Estado inicial: `pending`
+
+## Objetivo
+
+Probar un backup lógico de la base aislada de Chess Mentor y restaurarlo en
+una base desechable del mismo contenedor, sin escribir artefactos pesados en el
+repositorio ni tocar el PostgreSQL existente en `5432`.
+
+## Resultado observable
+
+El script crea un dump custom fuera del repositorio, restaura el esquema en
+`chess_mentor_restore_test`, verifica la tabla `JobRecord` y elimina únicamente
+esa base de prueba. El dump se conserva solo si se solicita `--keep`.
+
+## Prerrequisitos
+
+- `CM-354` en `complete`.
+- Docker Desktop/Engine operativo y `chessmentor-postgres` saludable.
+
+## Decisiones congeladas
+
+- D-003: usar la imagen y herramientas ya fijadas, sin instalar nada nuevo.
+- D-014: operar exclusivamente contra `127.0.0.1:5433`.
+- D-021: no introducir sincronización cloud ni datos reales.
+
+## Contrato congelado
+
+- Comando: `node scripts/db-backup-restore.mjs`.
+- El ejecutable Docker se toma de `CHESS_MENTOR_DOCKER_EXE` o de la ruta local
+  conocida de Docker Desktop; no depende de que `docker` esté en `PATH`.
+- El archivo temporal se crea bajo `%TEMP%`; si una ruta indicada cae dentro
+  del repositorio, el script la rechaza.
+- La restauración usa exclusivamente la base fija
+  `chess_mentor_restore_test`; no se permite parametrizar un nombre arbitrario
+  que pueda apuntar a datos reales.
+- La limpieza final solo elimina la base de prueba y los temporales creados por
+  el script. El volumen `chess_mentor_pgdata` y la base fuente permanecen.
+
+## Archivos permitidos
+
+- `scripts/db-backup-restore.mjs`.
+- `tasks/PHASE-3.5.md`.
+- `tasks/STATUS.md`.
+
+## Archivos prohibidos
+
+- `.env`, `.env.local`, dumps dentro del repositorio y datos reales.
+- El PostgreSQL del host en `5432`, volúmenes ajenos o bases distintas de la
+  base de restauración fija.
+
+## Fuera de alcance
+
+- Backup físico del volumen Docker.
+- Programación automática, almacenamiento cloud o cifrado de secretos.
+- Migraciones nuevas y cambios del esquema Prisma.
+
+## Pasos exactos
+
+1. Obtener el contenedor del servicio `postgres` y comprobar `pg_isready`.
+2. Ejecutar `pg_dump --format=custom`, copiar el dump a `%TEMP%`, crear la base
+   desechable y restaurar con `pg_restore --exit-on-error`.
+3. Verificar `public."JobRecord"`, limpiar la base de prueba y borrar el dump
+   salvo que se haya pedido `--keep`.
+
+## Verificación focal
+
+```powershell
+node scripts/db-backup-restore.mjs
+```
+
+Resultado esperado:
+
+- El comando termina con exit code 0 y muestra `BACKUP_RESTORE_PASS`.
+- La base fuente y el puerto `5432` no se modifican.
+
+## Verificación global
+
+```powershell
+pnpm.cmd run verify
+git diff --check
+```
+
+## Prueba manual
+
+- `PASS`: ejecutar el script con Docker Desktop activo y registrar contenedor,
+  puerto `5433`, base restaurada y limpieza confirmada.
+- Si Docker no responde, conservar `ready_for_manual` y no inventar PASS.
+
+## Commit local de cierre
+
+- Mensaje: `CM-355: verify PostgreSQL backup restore`.
+- Stage permitido: `scripts/db-backup-restore.mjs tasks/PHASE-3.5.md tasks/STATUS.md`.
+- Push: prohibido salvo petición separada del usuario.
+
+## Condiciones de parada
+
+- El script resuelve una base o volumen fuera de Chess Mentor.
+- El dump se crea dentro del repositorio o la restauración toca `5432`.
+- La restauración no permite verificar `JobRecord`.
+
+## Rollback
+
+Revertir únicamente el commit de esta tarjeta; no borrar el volumen
+`chess_mentor_pgdata` ni la base PostgreSQL fuente.
+
+## Handoff
+
+Usar `docs/HANDOFF.md`.
+
+---
+
 # CM-351 — Repositorio Prisma de partidas
 
 Estado inicial: `pending`
