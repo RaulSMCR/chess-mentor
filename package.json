@@ -21,6 +21,11 @@
     "test:e2e:only": "playwright test",
     "verify": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run test:unit && pnpm run build",
     "verify:phase1": "pnpm run verify && pnpm run test:e2e",
+    "db:up": "docker compose up -d postgres",
+    "db:stop": "docker compose stop postgres",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate deploy",
+    "db:migrate:dev": "prisma migrate dev",
     "worker:build": "tsc -p worker/tsconfig.json",
     "worker:start": "pnpm run worker:build && node .worker-dist/worker/server.js"
   },
@@ -28,6 +33,7 @@
     "@echecs/pgn": "5.0.0",
     "@echecs/position": "4.0.0",
     "@echecs/san": "3.2.0",
+    "@prisma/client": "6.19.3",
     "chess.js": "1.4.0",
     "fflate": "0.8.2",
     "next": "16.3.0",
@@ -49,6 +55,7 @@
     "eslint-config-next": "16.3.0",
     "jsdom": "30.0.1",
     "prettier": "3.9.6",
+    "prisma": "6.19.3",
     "typescript": "6.0.3",
     "vitest": "4.1.10"
   },

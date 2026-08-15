@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum JobStatus {
+  QUEUED    @map("queued")
+  RUNNING   @map("running")
+  SUCCEEDED @map("succeeded")
+  FAILED    @map("failed")
+  CANCELLED @map("cancelled")
+}
+
+model GameRecord {
+  id        String   @id @db.VarChar(128)
+  title     String   @db.VarChar(512)
+  result    String   @db.VarChar(7)
+  revision  Int
+  document  Json
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  @@index([updatedAt, id])
+}
+
+model TrainerExerciseRecord {
+  id        String   @id @db.VarChar(128)
+  nextDueAt DateTime @db.Timestamptz(3)
+  payload   Json
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  @@index([nextDueAt, id])
+}
+
+model JobRecord {
+  id             String    @id @default(uuid()) @db.Uuid
+  kind           String    @db.VarChar(128)
+  status         JobStatus @default(QUEUED)
+  attemptCount   Int       @default(0)
+  leaseUntil     DateTime? @db.Timestamptz(3)
+  checkpoint     Json?
+  idempotencyKey String    @unique @db.VarChar(255)
+  result         Json?
+  error          Json?
+  createdAt      DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt      DateTime  @updatedAt @db.Timestamptz(3)
+
+  @@index([status, leaseUntil])
+}

@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: postgres:16.14
+    environment:
+      POSTGRES_DB: chess_mentor
+      POSTGRES_USER: chess_mentor
+      POSTGRES_PASSWORD: change_me
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - chess_mentor_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U chess_mentor -d chess_mentor"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+volumes:
+  chess_mentor_pgdata:
+    name: chess_mentor_pgdata
