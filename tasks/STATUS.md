@@ -46,10 +46,11 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-350 | complete         | CM-306     | Base PostgreSQL aislada y Prisma              |
 | CM-351 | complete         | CM-350     | Repositorio Prisma de partidas                |
 | CM-352 | complete         | CM-351     | Repositorio Prisma de ejercicios              |
+| CM-353 | in_progress      | CM-352     | Cola reanudable y repositorio Prisma de jobs  |
 
 ## Próxima tarjeta
 
-No hay una tarjeta posterior definida; la siguiente debe cubrir los jobs reanudables de Fase 3.5.
+CM-353 en `tasks/PHASE-3.5.md`.
 
 ## Regla de avance
 
