@@ -48,11 +48,11 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-352 | complete         | CM-351     | Repositorio Prisma de ejercicios              |
 | CM-353 | complete         | CM-352     | Cola reanudable y repositorio Prisma de jobs  |
 | CM-354 | complete         | CM-353     | Runner server-only de jobs                    |
-| CM-355 | ready_for_manual | CM-354     | Backup y restauración de prueba PostgreSQL    |
+| CM-355 | complete         | CM-354     | Backup y restauración de prueba PostgreSQL    |
 
 ## Próxima tarjeta
 
-CM-355 en `tasks/PHASE-3.5.md`.
+No hay una tarjeta posterior definida; la siguiente debe desglosar Fase 4 (biblioteca textual, empezando por TXT).
 
 ## Regla de avance
 

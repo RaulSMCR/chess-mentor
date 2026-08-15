@@ -138,7 +138,7 @@ function main() {
     ]);
     docker(["exec", container, "rm", "-f", restoreDumpPath]);
 
-    const relation = docker([
+    const relationExists = docker([
       "exec",
       container,
       "psql",
@@ -148,10 +148,12 @@ function main() {
       "-d",
       RESTORE_DATABASE,
       "-c",
-      `SELECT to_regclass('public."JobRecord"')`,
+      `SELECT (to_regclass('public."JobRecord"') IS NOT NULL)`,
     ]).trim();
-    if (relation !== 'public."JobRecord"') {
-      throw new Error(`La restauración no contiene JobRecord: ${relation}`);
+    if (relationExists !== "t") {
+      throw new Error(
+        `La restauración no contiene JobRecord: ${relationExists}`,
+      );
     }
   } catch (error) {
     primaryError = error;
