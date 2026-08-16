@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "sourceSha256": "6b975a117afca3d6d6b5945ea93ef3eb84b99418a582b19ff4cee2a7a501aa55",
+  "sizeBytes": 297,
+  "textSha256": "87aea5783fce5d6361087218f3d23b06e015e8d86a40c53dead019f53ddbb678",
+  "chunks": [
+    { "ordinal": 0, "startByte": 0, "endByte": 31 },
+    { "ordinal": 1, "startByte": 33, "endByte": 96 },
+    { "ordinal": 2, "startByte": 97, "endByte": 131 },
+    { "ordinal": 3, "startByte": 210, "endByte": 240 },
+    { "ordinal": 4, "startByte": 270, "endByte": 296 }
+  ]
+}

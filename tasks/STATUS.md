@@ -50,10 +50,11 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-354 | complete         | CM-353     | Runner server-only de jobs                    |
 | CM-355 | complete         | CM-354     | Backup y restauración de prueba PostgreSQL    |
 | CM-400 | complete         | CM-355     | Ingestión TXT y procedencia básica            |
+| CM-401 | complete         | CM-400     | Ingestión Markdown saneada                    |
 
 ## Próxima tarjeta
 
-No hay una tarjeta posterior definida; la siguiente debe cubrir Markdown con saneamiento y localizadores derivados.
+No hay una tarjeta posterior definida; la siguiente debe cubrir PGN bibliográfico con procedencia y validación existente.
 
 ## Regla de avance
 
