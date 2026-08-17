@@ -60,11 +60,11 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-408 | complete         | CM-407     | Integración de catálogo e índice             |
 | CM-409 | complete         | CM-408     | Contrato AIProvider y fake determinista     |
 | CM-410 | complete         | CM-409     | Health local de Ollama                      |
+| CM-411 | complete         | CM-410     | Versionado y dimensión de embeddings       |
 
 ## Próxima tarjeta
 
-La siguiente debe cubrir chunking/versionado y dimensión de embeddings sin
-descargar modelos.
+La siguiente debe cubrir recuperación con búsqueda textual como fallback.
 
 ## Regla de avance
 
