@@ -58,11 +58,12 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-406 | complete         | CM-405     | Catálogo persistente de importaciones        |
 | CM-407 | complete         | CM-406     | Adaptador de importación física              |
 | CM-408 | complete         | CM-407     | Integración de catálogo e índice             |
+| CM-409 | complete         | CM-408     | Contrato AIProvider y fake determinista     |
 
 ## Próxima tarjeta
 
-La siguiente debe cubrir el cierre de Fase 4 y la preparación de tarjetas de
-Fase 5.
+La siguiente debe cubrir el health del proveedor local (Ollama) sin instalar
+ni descargar modelos.
 
 ## Regla de avance
 
