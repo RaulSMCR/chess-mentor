@@ -62,10 +62,11 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-410 | complete         | CM-409     | Health local de Ollama                      |
 | CM-411 | complete         | CM-410     | Versionado y dimensión de embeddings       |
 | CM-412 | complete         | CM-411     | Recuperacion semantica con fallback textual |
+| CM-413 | complete         | CM-412     | Contrato de claims estructurados y citas   |
 
 ## Próxima tarjeta
 
-La siguiente debe cubrir claims estructurados y citas con procedencia.
+La siguiente debe cubrir verificacion de claims, fuentes y corpus insuficiente.
 
 ## Regla de avance
 
