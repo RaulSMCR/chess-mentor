@@ -1,0 +1,38 @@
+{
+  "header": "%PDF-1.7\n",
+  "objects": [
+    {
+      "number": 1,
+      "generation": 0,
+      "body": "<< /Type /Catalog /Pages 2 0 R >>"
+    },
+    {
+      "number": 2,
+      "generation": 0,
+      "body": "<< /Type /Pages /Kids [4 0 R 3 0 R] /Count 2 >>"
+    },
+    {
+      "number": 3,
+      "generation": 0,
+      "body": "<< /Type /Page /Parent 2 0 R /Contents 5 0 R >>"
+    },
+    {
+      "number": 4,
+      "generation": 0,
+      "body": "<< /Type /Page /Parent 2 0 R /Contents 6 0 R >>"
+    },
+    {
+      "number": 5,
+      "generation": 0,
+      "stream": "BT\n/F1 12 Tf\n<FEFF004D006100740065007200690061006C> Tj\nT*\n(estrategia) Tj\nET\n",
+      "filter": null
+    },
+    {
+      "number": 6,
+      "generation": 0,
+      "stream": "BT\n/F1 12 Tf\n(Decision) Tj\nTd\n[( y) -120 ( y)] TJ\nET\n",
+      "filter": "FlateDecode"
+    }
+  ],
+  "footer": "%%EOF\n"
+}
