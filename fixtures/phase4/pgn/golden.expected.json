@@ -1,0 +1,25 @@
+{
+  "gameCount": 2,
+  "sourceSha256": "fb7c31a17b64818895ffec3f2d194304fc56e6b0ca88ed86dce8e48aa6d55ee3",
+  "sizeBytes": 459,
+  "games": [
+    {
+      "gameIndex": 0,
+      "work": "Fictional Chess Anthology",
+      "edition": "First fixture edition",
+      "fragment": "1",
+      "warningCount": 0,
+      "result": "1-0",
+      "moveCount": 6
+    },
+    {
+      "gameIndex": 1,
+      "work": "Fictional Chess Anthology",
+      "edition": null,
+      "fragment": "2",
+      "warningCount": 0,
+      "result": "1/2-1/2",
+      "moveCount": 4
+    }
+  ]
+}

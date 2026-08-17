@@ -1,0 +1,22 @@
+[Event "Fixture Book - Game One"]
+[Site "Fictional Archive"]
+[Date "2026.08.17"]
+[Round "1"]
+[White "Alice"]
+[Black "Bob"]
+[Result "1-0"]
+[Source "Fictional Chess Anthology"]
+[SourceVersion "First fixture edition"]
+
+1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 1-0
+
+[White "Carol"]
+[Black "Diego"]
+[Event "Fixture Book - Game Two"]
+[Site "Fictional Archive"]
+[Date "2026.08.17"]
+[Round "2"]
+[Result "1/2-1/2"]
+[Source "Fictional Chess Anthology"]
+
+1. d4 d5 2. c4 e6 1/2-1/2
