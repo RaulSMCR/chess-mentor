@@ -1,0 +1,12 @@
+{
+  "storageKey": "chess-mentor.library.catalog.v1",
+  "schemaVersion": 1,
+  "listImportKeys": [
+    "pdf-text-v1:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "txt-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  ],
+  "reviewStatus": "pending",
+  "confidence": "low",
+  "upsertKinds": ["created", "unchanged"],
+  "chunkId": "chunk-tac-0"
+}

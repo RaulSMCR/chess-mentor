@@ -1,0 +1,56 @@
+[
+  {
+    "importKey": "pdf-text-v1:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "extractorVersion": "pdf-text-v1",
+    "source": {
+      "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "sizeBytes": 256,
+      "mediaType": "application/pdf",
+      "fileName": "tactica.pdf"
+    },
+    "title": "Tactica de fixture",
+    "confidence": "low",
+    "reviewStatus": "pending",
+    "reviewReason": "La fixture requiere revision humana.",
+    "chunks": [
+      {
+        "id": "chunk-tac-0",
+        "ordinal": 0,
+        "text": "El calculo tactico requiere verificar amenazas.",
+        "locator": {
+          "kind": "pdf-offset",
+          "pageIndex": 0,
+          "unit": "utf8-byte",
+          "startByte": 0,
+          "endByte": 48
+        }
+      }
+    ]
+  },
+  {
+    "importKey": "txt-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "extractorVersion": "txt-v1",
+    "source": {
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "sizeBytes": 128,
+      "mediaType": "text/plain",
+      "fileName": "posicional.txt"
+    },
+    "title": "Posicional de fixture",
+    "confidence": "high",
+    "reviewStatus": "not_required",
+    "chunks": [
+      {
+        "id": "chunk-pos-0",
+        "ordinal": 0,
+        "text": "La evaluacion posicional requiere espacio.",
+        "locator": {
+          "kind": "offset",
+          "unit": "utf8-byte",
+          "startByte": 0,
+          "endByte": 45
+        }
+      }
+    ]
+  }
+]
