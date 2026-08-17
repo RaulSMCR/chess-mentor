@@ -61,10 +61,11 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-409 | complete         | CM-408     | Contrato AIProvider y fake determinista     |
 | CM-410 | complete         | CM-409     | Health local de Ollama                      |
 | CM-411 | complete         | CM-410     | Versionado y dimensión de embeddings       |
+| CM-412 | complete         | CM-411     | Recuperacion semantica con fallback textual |
 
 ## Próxima tarjeta
 
-La siguiente debe cubrir recuperación con búsqueda textual como fallback.
+La siguiente debe cubrir claims estructurados y citas con procedencia.
 
 ## Regla de avance
 
