@@ -1,0 +1,30 @@
+[
+  {
+    "path": "sources/lesson.txt",
+    "fileName": "lesson.TXT",
+    "format": "txt",
+    "text": "Decision rule\nKeep the king safe"
+  },
+  {
+    "path": "sources/chapter.md",
+    "fileName": "chapter.MD",
+    "format": "markdown",
+    "text": "# Decision\n\nChoose the forcing move."
+  },
+  {
+    "path": "sources/games.pgn",
+    "fileName": "games.PGN",
+    "format": "pgn",
+    "text": "[Event \"Fixture Event\"]\n[Site \"Fixture\"]\n[Date \"2026.01.01\"]\n[Round \"1\"]\n[White \"Alice\"]\n[Black \"Bob\"]\n[Result \"1-0\"]\n[Source \"Fictional anthology\"]\n[SourceVersion \"First fixture edition\"]\n\n1. e4 e5 2. Nf3 Nc6 1-0"
+  },
+  {
+    "path": "sources/book.epub",
+    "fileName": "book.EPUB",
+    "format": "epub"
+  },
+  {
+    "path": "sources/book.pdf",
+    "fileName": "book.PDF",
+    "format": "pdf"
+  }
+]

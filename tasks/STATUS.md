@@ -56,11 +56,12 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-404 | complete         | CM-403     | Ingestión PDF textual con localizadores      |
 | CM-405 | complete         | CM-404     | Índice y búsqueda de biblioteca              |
 | CM-406 | complete         | CM-405     | Catálogo persistente de importaciones        |
+| CM-407 | complete         | CM-406     | Adaptador de importación física              |
 
 ## Próxima tarjeta
 
-La siguiente debe cubrir el job/adaptador de importación física o la subfase
-que corresponda al plan de Fase 4.
+La siguiente debe cubrir el job batch/reanudable o la subfase que corresponda
+al plan de Fase 4.
 
 ## Regla de avance
 

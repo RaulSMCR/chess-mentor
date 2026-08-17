@@ -1,0 +1,19 @@
+{
+  "formats": ["txt", "markdown", "pgn", "epub", "pdf"],
+  "confidenceByFormat": {
+    "txt": "high",
+    "markdown": "high",
+    "pgn": "high",
+    "epub": "high",
+    "pdf": "medium"
+  },
+  "reviewStatusByFormat": {
+    "txt": "not_required",
+    "markdown": "not_required",
+    "pgn": "not_required",
+    "epub": "not_required",
+    "pdf": "pending"
+  },
+  "readerCalls": 5,
+  "catalogEntryCount": 5
+}
