@@ -63,10 +63,11 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-411 | complete         | CM-410     | Versionado y dimensión de embeddings       |
 | CM-412 | complete         | CM-411     | Recuperacion semantica con fallback textual |
 | CM-413 | complete         | CM-412     | Contrato de claims estructurados y citas   |
+| CM-414 | complete         | CM-413     | Verificador de claims y suficiencia de fuentes |
 
 ## Próxima tarjeta
 
-La siguiente debe cubrir verificacion de claims, fuentes y corpus insuficiente.
+La siguiente debe cubrir explicacion pedagogica de Stockfish etiquetada.
 
 ## Regla de avance
 
