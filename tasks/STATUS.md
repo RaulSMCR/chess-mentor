@@ -59,11 +59,12 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-407 | complete         | CM-406     | Adaptador de importación física              |
 | CM-408 | complete         | CM-407     | Integración de catálogo e índice             |
 | CM-409 | complete         | CM-408     | Contrato AIProvider y fake determinista     |
+| CM-410 | complete         | CM-409     | Health local de Ollama                      |
 
 ## Próxima tarjeta
 
-La siguiente debe cubrir el health del proveedor local (Ollama) sin instalar
-ni descargar modelos.
+La siguiente debe cubrir chunking/versionado y dimensión de embeddings sin
+descargar modelos.
 
 ## Regla de avance
 
