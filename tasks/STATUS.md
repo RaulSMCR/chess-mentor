@@ -52,10 +52,12 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-400 | complete         | CM-355     | Ingestión TXT y procedencia básica            |
 | CM-401 | complete         | CM-400     | Ingestión Markdown saneada                    |
 | CM-402 | complete         | CM-401     | Ingestión PGN bibliográfica y procedencia     |
+| CM-403 | complete         | CM-402     | Ingestión EPUB con localizadores             |
 
 ## Próxima tarjeta
 
-No hay una tarjeta posterior definida.
+No hay una tarjeta posterior definida; la siguiente debe cubrir PDF textual,
+índice y búsqueda de biblioteca.
 
 ## Regla de avance
 

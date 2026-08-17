@@ -157,4 +157,9 @@ Los contratos HTTP se fijarán con Zod/OpenAPI antes de cada fase que los use.
 
 ## 9. Estado y siguiente paso
 
-La auditoría y este paquete de preparación están completos. La aplicación todavía no existe. La única tarea autorizada a continuación es `CM-001` en `tasks/PHASE-0.md`.
+La auditoría, el baseline, el núcleo de ajedrez, el worker local, Stockfish,
+el entrenador, PostgreSQL/jobs y los extractores TXT/Markdown/PGN/EPUB están
+cerrados según `tasks/STATUS.md`. La aplicación existe y Fase 4 continúa con
+PDF textual, índice y búsqueda de biblioteca. La prueba Android LAN del plan
+original sigue sin ejecutarse y no se sustituye por la evidencia del shortcut
+HTTPS público.

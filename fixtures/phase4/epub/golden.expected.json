@@ -1,0 +1,33 @@
+{
+  "sourceSha256": "40bf6284ed1cd7a71b5852f1815f0f6dd33a256f4543d190011d0fc4e728ff88",
+  "sizeBytes": 1573,
+  "title": "Fixture EPUB de ajedrez",
+  "language": "es",
+  "chapters": [
+    {
+      "ordinal": 0,
+      "href": "OEBPS/text/chapter-1.xhtml",
+      "spineId": "chapter-one",
+      "title": "Ideas centrales",
+      "text": "Ideas centrales\nEl centro importa & se estudia.\nPrimera linea.\nSegunda linea.",
+      "chunkTexts": [
+        "Ideas centrales",
+        "El centro importa & se estudia.",
+        "Primera linea.",
+        "Segunda linea."
+      ]
+    },
+    {
+      "ordinal": 1,
+      "href": "OEBPS/text/chapter-2.xhtml",
+      "spineId": "chapter-two",
+      "title": "Capitulo dos",
+      "text": "Capitulo dos\nUna variante con <texto> visible.\nFin del ejemplo.",
+      "chunkTexts": [
+        "Capitulo dos",
+        "Una variante con <texto> visible.",
+        "Fin del ejemplo."
+      ]
+    }
+  ]
+}

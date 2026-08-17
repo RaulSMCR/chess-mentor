@@ -1,0 +1,9 @@
+{
+  "entries": {
+    "mimetype": "application/epub+zip",
+    "META-INF/container.xml": "<?xml version=\"1.0\"?><container><rootfiles><rootfile full-path=\"OEBPS/content.opf\" media-type=\"application/oebps-package+xml\"/></rootfiles></container>",
+    "OEBPS/content.opf": "<?xml version=\"1.0\"?><package><metadata><dc:title>Fixture EPUB de ajedrez</dc:title><dc:language>es</dc:language></metadata><manifest><item id=\"chapter-one\" href=\"text/chapter-1.xhtml\" media-type=\"application/xhtml+xml\"/><item id=\"chapter-two\" href=\"text/chapter-2.xhtml\" media-type=\"application/xhtml+xml\"/></manifest><spine><itemref idref=\"chapter-one\"/><itemref idref=\"chapter-two\"/></spine></package>",
+    "OEBPS/text/chapter-1.xhtml": "<?xml version=\"1.0\"?><html><head><title>Capitulo uno</title><style>.hidden{display:none}</style></head><body><h1>Ideas centrales</h1><p>El centro importa &amp; se estudia.</p><!-- secreto --><script>alert('no ejecutar')</script><p>Primera linea.<br/>Segunda linea.</p></body></html>",
+    "OEBPS/text/chapter-2.xhtml": "<html><body><h2>Capitulo dos</h2><p>Una variante con &lt;texto&gt; visible.</p><p>Fin del ejemplo.</p></body></html>"
+  }
+}
