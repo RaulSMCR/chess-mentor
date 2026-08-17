@@ -54,10 +54,12 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-402 | complete         | CM-401     | Ingestión PGN bibliográfica y procedencia     |
 | CM-403 | complete         | CM-402     | Ingestión EPUB con localizadores             |
 | CM-404 | complete         | CM-403     | Ingestión PDF textual con localizadores      |
+| CM-405 | complete         | CM-404     | Índice y búsqueda de biblioteca              |
 
 ## Próxima tarjeta
 
-La siguiente debe cubrir índice y búsqueda de biblioteca.
+La siguiente debe cubrir persistencia/importación física de biblioteca o la
+subfase que corresponda al plan de Fase 4.
 
 ## Regla de avance
 

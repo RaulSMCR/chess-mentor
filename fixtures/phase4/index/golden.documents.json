@@ -1,0 +1,71 @@
+[
+  {
+    "importKey": "markdown-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "title": "Proceso posicional",
+    "source": {
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "sizeBytes": 128,
+      "mediaType": "text/markdown",
+      "fileName": "posicional.md"
+    },
+    "chunks": [
+      {
+        "id": "chunk-pos-0",
+        "ordinal": 0,
+        "text": "La evaluaci\u00f3n posicional requiere espacio.",
+        "locator": {
+          "kind": "offset",
+          "unit": "utf8-byte",
+          "startByte": 0,
+          "endByte": 43
+        }
+      },
+      {
+        "id": "chunk-pos-1",
+        "ordinal": 1,
+        "text": "La evaluacion t\u00e1ctica confirma amenazas.",
+        "locator": {
+          "kind": "offset",
+          "unit": "utf8-byte",
+          "startByte": 44,
+          "endByte": 91
+        }
+      }
+    ]
+  },
+  {
+    "importKey": "pdf-text-v1:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "source": {
+      "sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "sizeBytes": 256,
+      "mediaType": "application/pdf",
+      "fileName": "tactica.pdf"
+    },
+    "chunks": [
+      {
+        "id": "chunk-tac-0",
+        "ordinal": 0,
+        "text": "El c\u00e1lculo t\u00e1ctico y la evaluaci\u00f3n material.",
+        "locator": {
+          "kind": "pdf-offset",
+          "pageIndex": 0,
+          "unit": "utf8-byte",
+          "startByte": 0,
+          "endByte": 54
+        }
+      },
+      {
+        "id": "chunk-tac-1",
+        "ordinal": 1,
+        "text": "La defensa crea contrajuego.",
+        "locator": {
+          "kind": "pdf-offset",
+          "pageIndex": 1,
+          "unit": "utf8-byte",
+          "startByte": 0,
+          "endByte": 29
+        }
+      }
+    ]
+  }
+]

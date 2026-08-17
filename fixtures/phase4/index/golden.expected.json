@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "indexVersion": "library-index-v1",
+  "documentCount": 2,
+  "chunkCount": 4,
+  "accentQuery": "EVALUACI\u00d3N T\u00c1CTICA",
+  "accentResults": [
+    {
+      "importKey": "markdown-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "chunkId": "chunk-pos-1",
+      "score": 2002,
+      "matchedTerms": ["evaluacion", "tactica"]
+    },
+    {
+      "importKey": "markdown-v1:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "chunkId": "chunk-pos-0",
+      "score": 1001,
+      "matchedTerms": ["evaluacion"]
+    },
+    {
+      "importKey": "pdf-text-v1:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "chunkId": "chunk-tac-0",
+      "score": 1001,
+      "matchedTerms": ["evaluacion"]
+    }
+  ],
+  "tieQuery": "LA",
+  "tieResults": ["chunk-pos-0", "chunk-pos-1", "chunk-tac-0", "chunk-tac-1"]
+}
