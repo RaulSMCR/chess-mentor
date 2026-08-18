@@ -68,11 +68,11 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-416 | complete         | CM-415     | Explicacion pedagogica de Stockfish etiquetada |
 | CM-417 | complete         | CM-416     | Gate de Fase 5 y evidencias manuales      |
 | CM-500 | complete         | CM-417     | Contrato de autores, teorias y revision humana |
-| CM-501 | pending          | CM-500     | Catalogo de autores, escuelas y conceptos |
+| CM-501 | complete         | CM-500     | Catalogo de autores, escuelas y conceptos |
 
 ## Próxima tarjeta
 
-CM-501 — Catalogo de autores, escuelas y conceptos.
+No hay otra tarjeta registrada como elegible en `tasks/STATUS.md`.
 
 ## Regla de avance
 
