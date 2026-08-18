@@ -65,10 +65,11 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-413 | complete         | CM-412     | Contrato de claims estructurados y citas   |
 | CM-414 | complete         | CM-413     | Verificador de claims y suficiencia de fuentes |
 | CM-415 | complete         | CM-414     | Generacion explicita de Prisma en build   |
+| CM-416 | complete         | CM-415     | Explicacion pedagogica de Stockfish etiquetada |
 
 ## Próxima tarjeta
 
-La siguiente debe cubrir explicacion pedagogica de Stockfish etiquetada.
+La siguiente debe preparar el gate de Fase 5 y sus evidencias manuales.
 
 ## Regla de avance
 
