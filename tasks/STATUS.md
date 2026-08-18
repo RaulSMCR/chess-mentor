@@ -64,6 +64,7 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-412 | complete         | CM-411     | Recuperacion semantica con fallback textual |
 | CM-413 | complete         | CM-412     | Contrato de claims estructurados y citas   |
 | CM-414 | complete         | CM-413     | Verificador de claims y suficiencia de fuentes |
+| CM-415 | complete         | CM-414     | Generacion explicita de Prisma en build   |
 
 ## Próxima tarjeta
 
