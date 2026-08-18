@@ -67,10 +67,11 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-415 | complete         | CM-414     | Generacion explicita de Prisma en build   |
 | CM-416 | complete         | CM-415     | Explicacion pedagogica de Stockfish etiquetada |
 | CM-417 | complete         | CM-416     | Gate de Fase 5 y evidencias manuales      |
+| CM-500 | pending          | CM-417     | Contrato de autores, teorias y revision humana |
 
 ## Próxima tarjeta
 
-No hay otra tarjeta registrada como elegible en `tasks/STATUS.md`.
+CM-500 — Contrato de autores, teorias y revision humana.
 
 ## Regla de avance
 
