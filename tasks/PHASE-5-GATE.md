@@ -82,10 +82,19 @@ Resultado observado en esta ejecución:
   disponible con 0 modelos cargados, por lo que el estado es
   `installed_not_running`.
 
+Resultado observado en la reanudación:
+
+- El usuario eliminó `mistral-nemo:12b` y `deepseek-r1:32b`.
+- `/api/tags` conserva `nomic-embed-text:latest` con capacidad `embedding`.
+- La prueba `/api/embed` devolvió 1 vector de 768 dimensiones.
+- `/api/ps` confirmó `nomic-embed-text:latest` cargado.
+- Evidencia humana recibida el `2026-08-18T18:46:55.7272115Z`, responsable
+  `Raul Olmedo`, sobre `127.0.0.1`.
+
 ## Prueba manual
 
-- `READY_FOR_MANUAL`: falta evidencia humana de modelo de embeddings elegido,
-  instalado, cargado y probado. No declarar `PASS` todavía.
+- `PASS`: evidencia humana recibida del modelo elegido, instalado, cargado y
+  probado mediante `/api/embed`.
 
 ## Commit local de cierre
 

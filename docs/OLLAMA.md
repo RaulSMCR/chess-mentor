@@ -35,6 +35,19 @@ El servicio respondio, `ollama list` mostro `mistral-nemo:12b` y
 observado es `installed_not_running`; esto no demuestra que exista un modelo
 de embeddings elegido, cargado y probado.
 
+## Evidencia manual recibida
+
+Fecha y hora UTC: `2026-08-18T18:46:55.7272115Z`
+Responsable: `Raul Olmedo`
+Host: `127.0.0.1`
+Servicio: `available`
+Modelo de embeddings elegido: `nomic-embed-text:latest`
+Modelo instalado: `si`
+Modelo cargado en `/api/ps`: `si`
+Prueba de embedding: `PASS` (1 vector, 768 dimensiones)
+Resultado del gate: `PASS`
+Notas: tras la limpieza solo quedo instalado el modelo de embeddings requerido.
+
 ## Evidencia manual
 
 Conservar fuera de Git o en el registro de evidencia solo el resumen siguiente,

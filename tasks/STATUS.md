@@ -66,12 +66,11 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-414 | complete         | CM-413     | Verificador de claims y suficiencia de fuentes |
 | CM-415 | complete         | CM-414     | Generacion explicita de Prisma en build   |
 | CM-416 | complete         | CM-415     | Explicacion pedagogica de Stockfish etiquetada |
-| CM-417 | ready_for_manual | CM-416     | Gate de Fase 5 y evidencias manuales      |
+| CM-417 | complete         | CM-416     | Gate de Fase 5 y evidencias manuales      |
 
 ## Próxima tarjeta
 
-CM-417 queda pendiente de evidencia humana del modelo de embeddings elegido,
-instalado, cargado y probado.
+No hay otra tarjeta registrada como elegible en `tasks/STATUS.md`.
 
 ## Regla de avance
 
