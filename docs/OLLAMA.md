@@ -27,6 +27,14 @@ Interpretacion:
 La presencia en `/api/tags` demuestra instalacion, no que el modelo este
 cargado. La evidencia debe indicar cual es el modelo elegido para embeddings.
 
+## Ultima comprobacion local
+
+El 18 de agosto de 2026 se consultaron la CLI y ambos endpoints en loopback.
+El servicio respondio, `ollama list` mostro `mistral-nemo:12b` y
+`deepseek-r1:32b`, y `ollama ps` no mostro procesos cargados. El estado
+observado es `installed_not_running`; esto no demuestra que exista un modelo
+de embeddings elegido, cargado y probado.
+
 ## Evidencia manual
 
 Conservar fuera de Git o en el registro de evidencia solo el resumen siguiente,
