@@ -72,7 +72,7 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-502 | complete         | CM-501     | Plan de modos, instructor y ejercicios derivados |
 | CM-503 | complete         | CM-502     | Contrato de sesion de instructor |
 | CM-504 | complete          | CM-503     | Ejercicio V2 con procedencia y continuacion |
-| CM-505 | pending          | CM-504     | Borrador de ejercicio desde una sesion |
+| CM-505 | complete          | CM-504     | Borrador de ejercicio desde una sesion |
 | CM-506 | pending          | CM-505     | Candidatos desde biblioteca y repositorios |
 | CM-507 | pending          | CM-506     | Interpretaciones de autor revisadas |
 | CM-508 | pending          | CM-507     | Orquestador de analisis y prospectiva |
@@ -86,7 +86,7 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 
 ## Próxima tarjeta
 
-Elegir `CM-505`; es la primera tarjeta `pending` elegible.
+Elegir `CM-506`; es la primera tarjeta `pending` elegible.
 
 ## Regla de avance
 
