@@ -269,3 +269,50 @@ Actualizar una versión o decisión requiere:
   clave `chess-mentor.trainer.v1` y envelope versionado propio.
 - Fase 3 mantiene adaptadores `MemoryTrainerRepository` y
   `LocalStorageTrainerRepository`; no crea tablas, API ni sincronización.
+
+## D-030 — Modos y entrada instalada
+
+- ADR-0001 es la decisión de arquitectura aceptada para la siguiente etapa.
+- `/` es la entrada común de la PWA y muestra un menú que explica `Práctica` e
+  `Instructor` antes de abrir un workspace.
+- Práctica consume ejercicios aprobados y no muestra selector de respuesta de
+  la contraparte.
+- Instructor permite fuentes, diálogo situado en el tablero, análisis,
+  prospectiva y selección de una respuesta legal con origen visible.
+- Una capability ausente se muestra como no disponible; no se simula un
+  instructor conectado.
+
+## D-031 — Sesión a ejercicio revisado
+
+- La sesión de instructor y `ExerciseV2` son documentos serializables,
+  inmutables y versionados; el dominio no depende de React, red o storage.
+- Un ejercicio puede originarse manualmente, en biblioteca, PGN/repositorio,
+  autor revisado o snapshot de sesión.
+- Toda carga o generación produce primero un borrador. Solo una revisión humana
+  explícita lo habilita para Práctica.
+- `ExerciseV1` sigue siendo legible. Su migración V2 usa `legacy_manual` y no
+  inventa fuentes, citas ni continuaciones.
+
+## D-032 — Respuesta de la contraparte
+
+- Instructor admite candidatos `source`, `engine` o `manual`, siempre legales
+  para el snapshot y con UCI/origen registrados.
+- Una línea de fuente, una evaluación de Stockfish y una elección humana no se
+  fusionan ni se atribuyen entre sí.
+- Práctica ejecuta la continuación aprobada del ejercicio y nunca expone el
+  selector de contraparte.
+- La prospectiva no muta el árbol hasta que el usuario incorpora una jugada o
+  variante de forma explícita.
+
+## D-033 — Shortcut privado y despliegue público
+
+- La instalación personal canónica del instructor será un shortcut PWA a una
+  URL HTTPS privada de Next.js local. El gate Tailscale/HTTPS puede adelantarse
+  para este alcance sin adelantar Drive, Obsidian o voz; esta excepción acotada
+  refina el orden de D-020.
+- Vercel permanece como demo/práctica con capacidades de navegador y no intenta
+  acceder a recursos del PC.
+- LAN HTTP es solo diagnóstico con fixtures ficticios. No se usan libros,
+  notas ni ejercicios privados por esa vía.
+- Worker, Ollama, PostgreSQL y archivos permanecen en loopback; Android solo
+  llama a Next.js por mismo origen.

@@ -69,10 +69,24 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-417 | complete         | CM-416     | Gate de Fase 5 y evidencias manuales      |
 | CM-500 | complete         | CM-417     | Contrato de autores, teorias y revision humana |
 | CM-501 | complete         | CM-500     | Catalogo de autores, escuelas y conceptos |
+| CM-502 | complete         | CM-501     | Plan de modos, instructor y ejercicios derivados |
+| CM-503 | pending          | CM-502     | Contrato de sesion de instructor |
+| CM-504 | pending          | CM-503     | Ejercicio V2 con procedencia y continuacion |
+| CM-505 | pending          | CM-504     | Borrador de ejercicio desde una sesion |
+| CM-506 | pending          | CM-505     | Candidatos desde biblioteca y repositorios |
+| CM-507 | pending          | CM-506     | Interpretaciones de autor revisadas |
+| CM-508 | pending          | CM-507     | Orquestador de analisis y prospectiva |
+| CM-509 | pending          | CM-508     | Repositorios de sesiones y ejercicios V2 |
+| CM-510 | pending          | CM-509     | Contratos HTTP y composicion local |
+| CM-511 | pending          | CM-510     | Menu inicial y entrada PWA por modos |
+| CM-512 | pending          | CM-511     | Workspace visual de instructor |
+| CM-513 | pending          | CM-512     | Practica con ejercicios cargados o derivados |
+| CM-514 | pending          | CM-513     | Gate integrado de instructor en escritorio |
+| CM-515 | pending          | CM-514     | Shortcut HTTPS privado y gate Android |
 
 ## Próxima tarjeta
 
-No hay otra tarjeta registrada como elegible en `tasks/STATUS.md`.
+Ejecutar `CM-503`; es la primera tarjeta `pending` con dependencias completas.
 
 ## Regla de avance
 

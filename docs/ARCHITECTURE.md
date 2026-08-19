@@ -419,3 +419,57 @@ El botón Guardar está disponible siempre que no haya una operación pendiente.
 - `VoiceProvider`: STT/TTS con artefactos separados.
 
 Ninguna de estas fronteras se implementa durante Fase 1 salvo el punto de extensión documentado.
+
+## 12. Workspace de instructor objetivo
+
+ADR-0001 agrega dos workspaces sobre las fronteras ya implementadas:
+
+```text
+Shortcut PWA -> menú de modos
+                    |
+          +---------+----------+
+          |                    |
+       Práctica             Instructor
+          |                    |
+   Exercise V1/V2       InstructorSessionV1
+          |            /       |        \
+    intento/SM-2   fuentes   Stockfish   IA opcional
+          |            \       |        /
+          +------ ExerciseDraftV2 <-----+
+                         |
+                   revisión humana
+                         |
+                  Práctica aprobada
+```
+
+El menú consulta capabilities por mismo origen. En Vercel, Instructor puede
+degradar o quedar no disponible sin intentar contactar el PC. En la instalación
+personal, una URL HTTPS privada expone solo Next.js; Next llama a servicios
+loopback y nunca entrega sus URLs o tokens al navegador.
+
+### Documentos objetivo
+
+`InstructorSessionV1` conserva un snapshot de `GameDocumentV1`, referencias de
+fuente, turnos situados en un `nodeId`, resultados de motor separados, respuesta
+estructurada y la selección de contraparte. Navegar o consultar prospectiva no
+muta el snapshot. Jugar o incorporar una variante usa los comandos existentes
+del árbol.
+
+`ExerciseV2` extiende el ejercicio existente con origen, referencias,
+continuaciones y revisión. La relación es unidireccional: una sesión produce un
+borrador; aprobarlo no reescribe la sesión ni el original. V1 se mantiene por
+compatibilidad y su migración no inventa procedencia.
+
+### Capas
+
+- `src/domain/instructor`: sesión, invariantes y derivación de borradores.
+- `src/application/instructor`: adaptación de fuentes y orquestación de
+  recuperación/motor/IA.
+- `src/infrastructure/instructor`: repositorios y composición local.
+- `src/features/workspace`: menú y selección de modo.
+- `src/features/instructor`: fuentes, tablero, diálogo y contraparte.
+
+React no manipula claims, fuentes ni el árbol directamente. Route Handlers
+validan contratos y límites antes de llamar la capa de aplicación. La
+generación es opcional: biblioteca, tablero, Stockfish y práctica determinista
+siguen disponibles según capabilities.

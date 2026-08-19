@@ -207,6 +207,25 @@ Prerequisito humano: modelo de embeddings instalado y probado; la app no lo desc
 
 Gate: cada argumento tiene tipo, fuente o estado `unsupported`, y toda corrección humana deja auditoría.
 
+## 11A. Fase 6B — Instructor y ejercicios derivados
+
+1. Documento inmutable de sesión situado en el árbol de partida.
+2. `ExerciseV2` compatible con V1, con origen, continuación y revisión.
+3. Derivación de borradores desde una sesión de instructor.
+4. Carga de candidatos desde biblioteca, PGN y repositorios de ejercicios.
+5. Interpretaciones de autor solo desde claims respaldados y revisados.
+6. Orquestación de fuentes, Stockfish, IA opcional y verificador.
+7. Repositorios locales y contratos HTTP de mismo origen.
+8. Menú inicial Práctica/Instructor abierto por el shortcut PWA.
+9. Workspace de instructor con selector de contraparte.
+10. Práctica consume ejercicios aprobados y oculta ese selector.
+11. Gate integrado de escritorio y gate Android HTTPS privado.
+
+Gate: una sesión con fixtures produce un borrador auditable, la revisión lo
+habilita para Práctica y el mismo ejercicio conserva fuente y política de
+respuesta. Las capacidades ausentes degradan de forma visible. Android accede
+por shortcut HTTPS privado y ningún servicio interno escucha fuera de loopback.
+
 ## 12. Fase 7A — Obsidian y Drive
 
 ### Obsidian

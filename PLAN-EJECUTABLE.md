@@ -52,10 +52,11 @@ El orden original tenía dependencias invertidas: ubicaba el worker al final aun
 8. **Fase 4 — biblioteca textual:** formatos con texto; OCR y diagramas como subfase posterior.
 9. **Fase 5 — IA contextual:** Ollama, recuperación y procedencia estructurada.
 10. **Fase 6 — autores y teorías:** comparación y revisión humana de atribuciones.
-11. **Fase 7A — Obsidian y Drive.**
-12. **Fase 7B — Tailscale y HTTPS.**
-13. **Fase 7C — voz:** STT/TTS después de HTTPS.
-14. **Fase 8 — nube y producción:** Supabase, RLS, sincronización, Vercel, PWA, backups y observabilidad.
+11. **Fase 6B — instructor:** modos, sesiones, fuentes, discusión y ejercicios derivados.
+12. **Fase 7A — Obsidian y Drive.**
+13. **Fase 7B — Tailscale y HTTPS.** Su gate puede adelantarse solo para el shortcut privado de Instructor según ADR-0001.
+14. **Fase 7C — voz:** STT/TTS después de HTTPS.
+15. **Fase 8 — nube y producción:** Supabase, RLS, sincronización, Vercel, PWA, backups y observabilidad.
 
 ## 4. Regla de ejecución
 
@@ -158,8 +159,13 @@ Los contratos HTTP se fijarán con Zod/OpenAPI antes de cada fase que los use.
 ## 9. Estado y siguiente paso
 
 La auditoría, el baseline, el núcleo de ajedrez, el worker local, Stockfish,
-el entrenador, PostgreSQL/jobs y los extractores TXT/Markdown/PGN/EPUB están
-cerrados según `tasks/STATUS.md`. La aplicación existe y Fase 4 continúa con
-PDF textual, índice y búsqueda de biblioteca. La prueba Android LAN del plan
-original sigue sin ejecutarse y no se sustituye por la evidencia del shortcut
-HTTPS público.
+el entrenador, PostgreSQL/jobs, la biblioteca textual, la IA contextual y los
+contratos iniciales de autores están cerrados hasta `CM-501`. ADR-0001 fija la
+siguiente etapa: menú Práctica/Instructor, sesión situada en el tablero,
+fuentes y respuestas con procedencia, y ejercicios cargados o derivados que
+requieren revisión humana antes de Práctica.
+
+`CM-502` materializa el plan y `CM-503` inicia la implementación con el contrato
+puro de sesión. El shortcut HTTPS privado se valida al final de la fase; el
+shortcut público sigue siendo demo/práctica y no sustituye acceso a recursos
+locales.
