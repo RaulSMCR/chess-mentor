@@ -1,26 +1,53 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import Home from "./page";
 
-vi.mock("react-chessboard", () => ({
-  Chessboard: () => <div data-testid="mock-board">tablero</div>,
-}));
+const capabilitiesPayload = {
+  ok: true,
+  data: {
+    deployment: "local",
+    capabilities: {
+      instructor: { status: "available", reason: null },
+      sources: { status: "available", reason: null },
+      respond: { status: "available", reason: null },
+    },
+    security: { sameOrigin: true, privateServicesExposed: false },
+  },
+};
 
-describe("Chess Mentor analysis shell", () => {
-  it("renders the stable heading and session actions", async () => {
+describe("Chess Mentor entry", () => {
+  beforeEach(() => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => capabilitiesPayload,
+      }),
+    );
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("opens with an accessible menu for both modes", async () => {
     render(<Home />);
 
     expect(
       screen.getByRole("heading", { level: 1, name: "Chess Mentor" }),
     ).toBeInTheDocument();
-    expect(await screen.findByText("Partida sin título")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Nueva" })).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: /guardar/i }),
+      screen.getByRole("heading", { name: "Práctica" }),
     ).toBeInTheDocument();
     expect(
-      screen.getByText("Modo LAN sin autenticación: usa solo datos ficticios."),
+      screen.getByRole("heading", { name: "Instructor" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Entrar en Práctica" }),
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByRole("button", { name: "Entrar en Instructor" }),
     ).toBeInTheDocument();
   });
 });

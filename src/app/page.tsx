@@ -1,5 +1,5 @@
-import { AnalysisBoard } from "@/features/analysis-board/AnalysisBoard";
+import { WorkspaceShell } from "@/features/workspace/WorkspaceShell";
 
 export default function Home() {
-  return <AnalysisBoard />;
+  return <WorkspaceShell />;
 }

@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Chess Mentor",
     short_name: "Chess Mentor",
-    description: "Análisis local de partidas de ajedrez.",
+    description: "Estudio de ajedrez con Practica e Instructor.",
     start_url: "/",
     scope: "/",
     display: "standalone",

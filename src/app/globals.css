@@ -49,6 +49,113 @@ body {
   background: var(--app-bg);
 }
 
+.workspace-menu-shell {
+  min-height: 100vh;
+  display: grid;
+  align-content: start;
+  justify-items: center;
+  padding: 2rem;
+}
+
+.workspace-menu {
+  display: grid;
+  width: min(100%, 52rem);
+  gap: 1rem;
+}
+
+.workspace-menu-header,
+.workspace-mode-card,
+.workspace-menu-note,
+.workspace-placeholder .position-card {
+  border: 1px solid var(--neutral-200);
+  border-radius: 1rem;
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+  padding: 1rem;
+}
+
+.workspace-menu-header {
+  background: linear-gradient(145deg, var(--brand-50), var(--surface-soft));
+  border-color: var(--brand-200);
+}
+
+.workspace-menu-header h1,
+.workspace-menu-header p,
+.workspace-mode-card h2,
+.workspace-mode-card p,
+.workspace-menu-note,
+.workspace-placeholder .position-card h2,
+.workspace-placeholder .position-card p {
+  margin: 0;
+}
+
+.workspace-menu-header h1 {
+  color: var(--brand-800);
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+}
+
+.workspace-menu-header > p:last-child {
+  margin-top: 0.5rem;
+  max-width: 42rem;
+}
+
+.workspace-mode-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.workspace-mode-card {
+  display: grid;
+  align-content: start;
+  gap: 0.75rem;
+}
+
+.workspace-mode-card h2 {
+  color: var(--brand-800);
+}
+
+.workspace-mode-kicker {
+  color: var(--brand-700);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.workspace-capability {
+  color: var(--neutral-600);
+  font-size: 0.875rem;
+}
+
+.workspace-mode-card button {
+  width: 100%;
+}
+
+.workspace-menu-note {
+  color: var(--neutral-600);
+  font-size: 0.875rem;
+}
+
+.workspace-mode-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: min(100%, 52rem);
+  margin: 0 auto;
+  padding: 1rem 2rem 0;
+}
+
+.workspace-mode-nav span {
+  color: var(--brand-800);
+  font-weight: 700;
+}
+
+.workspace-placeholder .position-card {
+  display: grid;
+  gap: 0.75rem;
+}
+
 .analysis-shell {
   min-height: 100vh;
   width: 100%;
@@ -780,6 +887,24 @@ button:disabled {
 }
 
 @media (max-width: 30rem) {
+  .workspace-menu-shell {
+    padding: 0.75rem;
+  }
+
+  .workspace-menu-header,
+  .workspace-mode-card,
+  .workspace-menu-note {
+    padding: 0.75rem;
+  }
+
+  .workspace-mode-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .workspace-mode-nav {
+    padding: 0.75rem 0.75rem 0;
+  }
+
   .analysis-shell {
     gap: 0.75rem;
     padding: 0.75rem;
