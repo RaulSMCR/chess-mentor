@@ -77,7 +77,7 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 | CM-507 | complete          | CM-506     | Interpretaciones de autor revisadas |
 | CM-508 | complete          | CM-507     | Orquestador de analisis y prospectiva |
 | CM-509 | complete          | CM-508     | Repositorios de sesiones y ejercicios V2 |
-| CM-510 | pending          | CM-509     | Contratos HTTP y composicion local |
+| CM-510 | complete          | CM-509     | Contratos HTTP y composicion local |
 | CM-511 | pending          | CM-510     | Menu inicial y entrada PWA por modos |
 | CM-512 | pending          | CM-511     | Workspace visual de instructor |
 | CM-513 | pending          | CM-512     | Practica con ejercicios cargados o derivados |
@@ -86,7 +86,7 @@ Estados válidos: `pending`, `in_progress`, `complete`, `ready_for_manual`, `blo
 
 ## Próxima tarjeta
 
-Elegir `CM-510`; es la primera tarjeta `pending` elegible.
+Elegir `CM-511`; es la primera tarjeta `pending` elegible.
 
 ## Regla de avance
 
